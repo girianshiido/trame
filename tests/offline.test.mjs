@@ -13,7 +13,9 @@ test('Service worker : précache complet, routes sous /trame/ et rechargement sa
  online=false;
  const request=async(url,mode='cors')=>{let response;events.fetch({request:{url,method:'GET',mode},respondWith:p=>response=p});return await response;};
  const home=await request(origin,'navigate');assert.ok(home.body.includes('TRAME'));
- const script=home.body.match(/src="\.\/([^\"]+\.js)"/)[1];assert.ok((await request(origin+script)).body.includes('Construction juste.'));
- const css=home.body.match(/href="\.\/([^\"]+\.css)"/)[1];assert.ok((await request(origin+css)).body.includes('.workspace'));
+ assert.ok(home.body.includes('Construction juste.'));
+ assert.ok(home.body.includes('.workspace'));
+ assert.ok(!/<script[^>]+src=/.test(home.body),'Le jeu doit rester autonome au rechargement');
+ assert.ok(!/<link[^>]+rel="stylesheet"/.test(home.body));
  assert.ok(await request(origin+'icon-192.png'));assert.ok(await request(origin+'manifest.webmanifest'));
 });
