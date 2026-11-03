@@ -11,3 +11,5 @@
 .gesture-label{font-size:8px;letter-spacing:1.4px;color:#969c85;margin-right:auto;padding-right:12px}.toolbar .hint-button{margin-left:auto}.toolbar .square{width:42px;height:42px}@media(max-width:760px){.gesture-label{font-size:7px;letter-spacing:1px;padding-right:4px}.toolbar .square{width:40px}.toolbar .hint-button span:not(.icon){display:inline}}@media(max-width:380px){.toolbar .hint-button span:not(.icon){display:none}}
 
 .precision-choice{display:flex;border:1px solid #dce0d1;border-radius:5px}.precision-grid .precision-choice>button{border:0;flex:1;min-width:0;padding:10px 7px}.precision-grid .precision-choice>button[data-from]{flex:0 0 30px;border-left:1px solid #dce0d1;font-size:18px;color:#b4733e}
+.gesture-label{white-space:nowrap;font-size:7px;letter-spacing:1px}.hint-button{flex-shrink:0}
+@media(min-width:1191px) and (max-height:820px){.desk{align-items:flex-start}.desk-note svg{width:130px;height:75px;margin:10px 0 6px}.desk-note .rule-note{display:none}.desk-note h2{font-size:18px;margin:6px 0 8px}.desk-note p{font-size:10px;line-height:1.6}.desk-note .text-button{padding:10px 0}}
