@@ -14,7 +14,7 @@ fs.rmSync(new URL('assets/',root),{recursive:true,force:true});
 const files=walk(root.pathname).filter(f=>f!=='sw.js');
 const hash=crypto.createHash('sha256');for(const f of files)hash.update(fs.readFileSync(new URL(f,root)));const version=hash.digest('hex').slice(0,12);
 const sw=`const CACHE='trame-${version}';const BASE=new URL('./',self.location.href);const FILES=${JSON.stringify(files.map(f=>'./'+f))};
-self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES.map(f=>new URL(f,BASE).href)))));
+self.addEventListener('install',e=>e.waitUntil(caches.open(CACHE).then(c=>c.addAll(FILES.map(f=>new Request(new URL(f,BASE).href,{cache:'reload'}))))));
 self.addEventListener('activate',e=>e.waitUntil(caches.keys().then(ks=>Promise.all(ks.filter(k=>k.startsWith('trame-')&&k!==CACHE).map(k=>caches.delete(k)))).then(()=>self.clients.claim())));
 self.addEventListener('message',e=>{if(e.data==='SKIP_WAITING')self.skipWaiting();});
 self.addEventListener('fetch',e=>{if(e.request.method!=='GET'||new URL(e.request.url).origin!==BASE.origin)return;if(e.request.mode==='navigate'){e.respondWith(caches.match(new URL('index.html',BASE).href).then(r=>r||fetch(e.request)));return;}e.respondWith(caches.match(e.request).then(r=>r||fetch(e.request)));});`;

@@ -73,7 +73,7 @@ const initial=level;start(initial,false);
 if(storageError)notify('Sauvegarde locale indisponible ou récupérée. Pense à exporter ta progression.');
 if(!Object.keys(save.results).length&&!save.drafts[initial.id]?.points.length){setStatus('Bienvenue ! Trouve le milieu. Touche le nœud choisi pour le marquer.');}
 if('serviceWorker'in navigator&&import.meta.env.PROD&&location.protocol!=='file:')window.addEventListener('load',()=>{
- navigator.serviceWorker.register('./sw.js').then(reg=>{
+ navigator.serviceWorker.register('./sw.js',{updateViaCache:'none'}).then(reg=>{
   reg.addEventListener('updatefound',()=>{const sw=reg.installing;sw?.addEventListener('statechange',()=>{if(sw.state==='installed'&&navigator.serviceWorker.controller)notify('Une mise à jour est prête dans les réglages.');});});
   void navigator.serviceWorker.ready.then(async()=>{
    const urls=[new URL('./index.html',location.href).href,...Array.from(document.querySelectorAll<HTMLScriptElement>('script[src]')).map(s=>s.src),...Array.from(document.querySelectorAll<HTMLLinkElement>('link[rel="stylesheet"]')).map(s=>s.href)];
