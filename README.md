@@ -13,6 +13,12 @@ Jeu français de constructions sur une grille de 8 × 8. **20 chapitres et 300 p
 
 Seule la figure finale est évaluée. Toute méthode exacte convient, avec des traits auxiliaires libres. Aucun corrigé ne peut être ouvert avant la réussite du niveau. Les rappels restent généraux. Après réussite, une construction alternative peut être rejouée.
 
+## Interface et apparence
+
+Sur téléphone, la grille occupe presque toute la largeur, avec adaptation à la hauteur réellement disponible sous les barres du navigateur. Seuls la consigne, un en-tête compact, annuler/rétablir, la précision et le menu inférieur restent visibles pendant le jeu. Aucun nombre n’est dessiné sur les axes. Le zoom par pincement et double tap est désactivé. Le jeu et le titre ne défilent pas ; les menus défilent indépendamment. Le logo TRAME revient à l’écran titre, qui propose de commencer ou continuer.
+
+Cinq thèmes sont disponibles et mémorisés : Aurore, Lagon, Nocturne, Citrus et Papier. Les traits auxiliaires sont translucides. Une fois la construction juste, les noms des points réponses et les segments finaux apparaissent. Dans les transformations de figures, les sommets images seuls ne suffisent pas : il faut aussi tracer les côtés demandés.
+
 ## Parcours
 
 1. Premiers traits
@@ -36,7 +42,7 @@ Seule la figure finale est évaluée. Toute méthode exacte convient, avec des t
 19. Perspectives
 20. Le grand atelier : Varignon, masses pondérées, Pappus
 
-Les séries reviennent sur les concepts dans d’autres orientations, puis avec des configurations réduites et décalées du quadrillage. Les chapitres 11 et 17 suivent une progression propre, des masses simples aux fils composés et des triangles aux plaques à encoches. Tous les niveaux restent accessibles, pour choisir sa difficulté.
+Les séries reviennent sur les concepts dans d’autres orientations, puis avec des configurations réduites et décalées du quadrillage. Les chapitres 11 et 17 suivent une progression propre, des masses simples aux fils composés et des triangles aux plaques à encoches. Les niveaux se débloquent un par un. Terminer les quinze niveaux ouvre le chapitre suivant et ramène au parcours, où le chapitre reçoit la mention « Terminé ». Les quinze niveaux d’un chapitre terminé restent librement rejouables. Les réussites enregistrées avant cette règle restent conservées et rejouables.
 
 ## Développer et construire
 

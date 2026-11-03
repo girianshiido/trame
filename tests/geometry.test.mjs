@@ -32,3 +32,19 @@ test('Centres : points, fil et surface ne sont pas confondus',()=>{
 test('Sauvegardes : validation, restauration et corruption',()=>{const s=fresh();s.results['1-1']={stars:3,moves:2};s.drafts['1-2']={points:[key(p(2,2))],lines:[]};assert.deepEqual(validate(JSON.parse(JSON.stringify(s))),s);assert.throws(()=>validate({version:2}));const db=new Map(),storage={getItem:k=>db.get(k)||null,setItem:(k,v)=>db.set(k,v)};assert.ok(persist(storage,s));assert.deepEqual(load(storage).save,s);db.set('trame-save-v1','broken');assert.deepEqual(load(storage).save,s);assert.ok(load(storage).error);assert.equal(persist({setItem:()=>{throw Error('quota');}},s),false);});
 
 test('Les segments de départ sont actifs, y compris hors des nœuds',()=>{const a=p(2,1),b=p(5,6),ls=key(cross(p(2,4),p(3,3))),board={points:[],lines:[ls]},seg=[[key(a),key(b)]];const crossing=cross(cross(a,b),read(ls));assert.ok(legalPoint(key(crossing),board,[key(a),key(b)],8,seg));const withGrid=cross(cross(a,b),cross(p(3,0),p(3,8)));assert.ok(legalPoint(key(withGrid),{points:[],lines:[]},[],8,seg));const extended=cross(cross(a,b),cross(p(0,0),p(0,8)));assert.ok(!legalPoint(key(extended),{points:[],lines:[]},[],8,seg));});
+
+test('Figures images : placer les seuls sommets ne suffit plus ; tout tracé exact convient',()=>{
+ for(const level of levels.filter(l=>l.targets.some(t=>t.kind==='line'&&t.segment))){
+  const points=level.targets.filter(t=>t.kind==='point').map(t=>t.p);
+  assert.ok(!solved(level,{points,lines:[...level.initialLines]}),level.id);
+  const lines=level.targets.filter(t=>t.kind==='line').map(t=>t.line);
+  assert.ok(solved(level,{points:[...points].reverse(),lines:[...lines].reverse()}),level.id);
+  for(const t of level.targets.filter(t=>t.kind==='line'&&t.segment)){
+   assert.ok(inside(read(t.segment[0]))&&inside(read(t.segment[1])));
+   assert.equal(lineThrough(...t.segment),t.line);
+  }
+ }
+ const rotation=levels.find(l=>l.id==='14-3');
+ assert.equal(rotation.targets.filter(t=>t.kind==='line'&&t.segment).length,1);
+ assert.ok(rotation.goal.includes('segment [A′B′]'));
+});
