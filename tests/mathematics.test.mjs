@@ -1,0 +1,17 @@
+import test from 'node:test';
+import assert from 'node:assert/strict';
+import fs from 'node:fs';
+import {read,xy} from '../.tools/geometry.js';
+const {levels}=JSON.parse(fs.readFileSync(new URL('../src/content.json',import.meta.url)));
+const near=(a,b)=>assert.ok(Math.abs(a-b)<1e-9,`${a} ≠ ${b}`);
+const vec=(a,b)=>[b[0]-a[0],b[1]-a[1]],dot=(a,b)=>a[0]*b[0]+a[1]*b[1],det=(a,b)=>a[0]*b[1]-a[1]*b[0];
+const point=k=>xy(read(k)),givens=l=>Object.fromEntries(l.given.map(g=>[g.label,point(g.p)]));
+const line=k=>read(k).map(Number),dir=k=>{const [a,b]=line(k);return [-b,a];};
+const pts=l=>l.targets.filter(t=>t.kind==='point').map(t=>point(t.p));
+test('Milieux : toutes les variantes ont les bonnes coordonnées',()=>{for(const l of levels.filter(l=>l.chapter===2)){const {A,B}=givens(l),[M]=pts(l);near(M[0],(A[0]+B[0])/2);near(M[1],(A[1]+B[1])/2);}});
+test('Parallèles, perpendiculaires et médiatrices : relations indépendantes',()=>{for(const l of levels){const g=givens(l);if(l.chapter===3){const [a,b,c]=line(l.targets[0].line);near(a*g.C[0]+b*g.C[1]+c,0);near(det(dir(l.targets[0].line),vec(g.A,g.B)),0);}if(l.chapter===5){const t=l.targets[0];if(t.kind==='line')near(dot(dir(t.line),vec(g.A,g.B)),0);else{const [H]=pts(l);near(det(vec(g.A,g.B),vec(g.A,H)),0);near(dot(vec(g.C,H),vec(g.A,g.B)),0);}}if(l.chapter===6){const [a,b,c]=line(l.targets[0].line);near(a*(g.A[0]+g.B[0])/2+b*(g.A[1]+g.B[1])/2+c,0);near(dot(dir(l.targets[0].line),vec(g.A,g.B)),0);}}});
+test('Symétries centrales : O est le milieu des paires',()=>{for(const l of levels.filter(l=>l.chapter===7)){const g=givens(l);l.targets.forEach(t=>{const a=g[t.label[0]],b=point(t.p);near((a[0]+b[0])/2,g.O[0]);near((a[1]+b[1])/2,g.O[1]);});}});
+test('Fils uniformes : pondération par les longueurs, pas par les sommets',()=>{for(const l of levels.filter(l=>l.chapter===11)){let x=0,y=0,total=0;if(!l.segments.length){for(const g of l.given){const a=point(g.p);x+=a[0];y+=a[1];total++;}}else{for(const [ka,kb]of l.segments){const a=point(ka),b=point(kb),w=Math.hypot(...vec(a,b));x+=(a[0]+b[0])/2*w;y+=(a[1]+b[1])/2*w;total+=w;}}const [g]=pts(l);near(g[0],x/total);near(g[1],y/total);}});
+test('Surfaces uniformes : formule des moments polygonaux, 15 plaques',()=>{for(const l of levels.filter(l=>l.chapter===17)){let area2=0,x=0,y=0;for(const [ka,kb]of l.segments){const a=point(ka),b=point(kb),s=det(a,b);area2+=s;x+=(a[0]+b[0])*s;y+=(a[1]+b[1])*s;}const [g]=pts(l);near(g[0],x/(3*area2));near(g[1],y/(3*area2));}});
+test('Partages de chemins : arclengths égales même après un coude',()=>{for(const l of levels.filter(l=>l.chapter===15)){const j=(l.number-1)%5,parts=[3,2,3,4,5][j],total=l.segments.reduce((s,[a,b])=>s+Math.hypot(...vec(point(a),point(b))),0);const distances=pts(l).map(q=>{let before=0;for(const [ka,kb]of l.segments){const a=point(ka),b=point(kb),ab=vec(a,b),aq=vec(a,q),len=Math.hypot(...ab);if(Math.abs(det(ab,aq))<1e-8&&dot(ab,aq)>=-1e-8&&dot(ab,aq)<=len*len+1e-8)return before+Math.hypot(...aq);before+=len;}throw Error('Point hors chemin');});for(const d of distances)near(d/(total/parts),Math.round(d/(total/parts)));}});
+test('Pappus : les trois intersections sont alignées',()=>{for(const l of levels.filter(l=>l.chapter===20&&(l.number-1)%5===4)){const [X,Y,Z]=pts(l);near(det(vec(X,Y),vec(X,Z)),0);}});

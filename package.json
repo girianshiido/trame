@@ -1,0 +1,11 @@
+{
+  "name": "trame-geometrie", "version": "1.0.0", "private": true, "type": "module",
+  "scripts": {
+    "dev": "vite --host 127.0.0.1",
+    "generate": "tsc -p tsconfig.tools.json && node scripts/content.mjs",
+    "test": "tsc -p tsconfig.tools.json && node --test tests/*.test.mjs",
+    "build": "tsc --noEmit && vite build && node scripts/release.mjs",
+    "preview": "vite preview --host 127.0.0.1"
+  },
+  "devDependencies": { "typescript": "~5.9.3", "vite": "^7.1.7" }
+}

@@ -1,0 +1,1 @@
+{"compilerOptions":{"target":"ES2022","module":"NodeNext","moduleResolution":"NodeNext","strict":true,"outDir":".tools","skipLibCheck":true},"include":["src/geometry.ts","src/types.ts","src/persistence.ts"]}
