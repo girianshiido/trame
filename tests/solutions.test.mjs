@@ -57,6 +57,6 @@ test('Grand Atelier final : centre de gravité puis tangente, sans centre donné
  const level=levels.find(l=>l.id==='21-15'),[a,b,c]=level.given.map(g=>read(g.p));
  assert.equal(level.given.map(g=>g.label).join(''),'ABC');
  const center=read(level.circles[0].center);assert.ok(same(center,scale(scale(a,b,1,2),c,2,3)));
- assert.equal(key(center),'4,4,1');const target=level.targets.find(t=>t.kind==='line'),[x,y,z]=read(target.line),[rn,rd]=level.circles[0].radius.map(BigInt),s=x*center[0]+y*center[1]+z*center[2];assert.equal(s*s*rd*rd,rn*rn*center[2]*center[2]*(x*x+y*y));
+ assert.equal(key(center),'43,47,11');const target=level.targets.find(t=>t.kind==='line'),[x,y,z]=read(target.line),[rn,rd]=level.circles[0].radius.map(BigInt),s=x*center[0]+y*center[1]+z*center[2];assert.equal(s*s*rd*rd,rn*rn*center[2]*center[2]*(x*x+y*y));
  assert.ok(on(read(target.line),a));assert.ok(replaySolution(level));
 });

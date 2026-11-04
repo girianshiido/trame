@@ -123,7 +123,7 @@ function enrichFinalFigure(level){
 }
 const levels=[];for(let ch=1;ch<=21;ch++){if(ch===20)continue;for(let r=0;r<3;r++)for(let j=0;j<5;j++){try{let level=make(ch,j,r);if(r===2&&ch!==1&&ch!==11&&ch!==15&&ch!==17){const shrink=q=>scale(read(q),P(4,4),7,11),sp=q=>key(shrink(q)),sl=q=>{const [a,b,c]=read(q);return key(norm(11n*a,11n*b,7n*c-16n*a-16n*b));};level={...level,given:level.given.map(g=>({...g,p:sp(g.p)})),segments:level.segments.map(s=>s.map(sp)),initialLines:level.initialLines.map(sl),targets:level.targets.map(t=>t.kind==='point'?{...t,p:sp(t.p)}:{...t,line:sl(t.line)})};level.steps=[];level.par=0;}if(ch===21&&r===2&&j===4)level=finalWorkshop(level);level=reuseGivenStrokes(buildGeometricSolution(enrichFinalFigure(level)));levels.push(level);}catch(e){console.error(`Chapter ${ch}, scene ${j}, rotation ${r}`);throw e;}}console.log(`Chapitre ${ch} : 15 solutions bornées.`);}
 function finalWorkshop(level){
- const a=P(109,116,22),b=P(53,60,22),c=P(51,44,11),g=mean([a,b,c]);
+ const a=P(107,122,22),b=P(51,66,22),c=P(50,47,11),g=mean([a,b,c]);
  const given=[a,b,c].map((q,i)=>({p:key(q),label:'ABC'[i]}));
  return {...level,title:'Le dernier contact',goal:'Place G, le centre de gravité du triangle ABC. Le cercle donné a pour centre G et passe par A : trace sa tangente en A.',lesson:'Milieux, centre de gravité et tangentes se rencontrent dans une même figure.',given,segments:[[key(a),key(b)],[key(b),key(c)],[key(c),key(a)]],initialLines:[],steps:[],par:0,circles:[{center:key(g),radius:[35,22],label:'c'}],targets:[{kind:'point',p:key(g),label:'G'},{kind:'line',line:key(cross(a,rotate(g,a))),label:'Tangente en A',circles:[0],contacts:[{p:key(a),label:'A'}]}]};
 }
