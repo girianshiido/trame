@@ -4,8 +4,13 @@ import fs from 'node:fs';
 import {p,key,read,cross,mid,on,scale,same,gridLines,lineThrough,onSegment} from '../.tools/geometry.js';
 import {replaySolution,reuseGivenStrokes} from '../.tools/solutions.js';
 import {Construction} from '../scripts/geometric-solutions.mjs';
-const {levels}=JSON.parse(fs.readFileSync(new URL('../src/content.json',import.meta.url)));
+const {levels}=JSON.parse(fs.readFileSync(new URL('../archive/corrections/content.json',import.meta.url)));
 const empty=()=>({id:'proof',given:[],segments:[],initialLines:[],targets:[]});
+test('Archives : les niveaux jouables gardent les mêmes objectifs sans embarquer les corrections',()=>{
+ const playable=JSON.parse(fs.readFileSync(new URL('../src/content.json',import.meta.url)));
+ assert.deepEqual(playable.levels,levels.map(({steps,par,...level})=>level));
+ assert.ok(levels.every(level=>level.steps.length>0));
+});
 test('Constructions flottantes : les parallèles, milieux et perpendiculaires suivent les données',()=>{
  for(const offset of [0,1,2]){
   const a=p(13+offset,17,7),b=p(41,31+offset,7),c=p(26,43+offset,11),level=empty();level.given=[a,b,c].map((q,i)=>({p:key(q),label:'ABC'[i]}));

@@ -188,5 +188,8 @@ function makeTangent(number){
 for(let n=1;n<=15;n++){try{levels.push(makeTangent(n));}catch(e){console.error('Tangente',n);throw e;}}
 console.log('Chapitre 20 : 15 tangentes et constructions bornées.');
 levels.sort((a,b)=>a.chapter-b.chapter||a.number-b.number);
-fs.writeFileSync(new URL('../src/content.json',import.meta.url),JSON.stringify({chapters,levels}));
+fs.mkdirSync(new URL('../archive/corrections/',import.meta.url),{recursive:true});
+fs.writeFileSync(new URL('../archive/corrections/content.json',import.meta.url),JSON.stringify({chapters,levels}));
+const playable=levels.map(({steps,par,...level})=>level);
+fs.writeFileSync(new URL('../src/content.json',import.meta.url),JSON.stringify({chapters,levels:playable}));
 console.log(`${levels.length} niveaux écrits.`);

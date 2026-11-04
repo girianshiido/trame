@@ -4,7 +4,7 @@ import fs from 'node:fs';
 import {p,key,read,cross,mid,mean,inside,on,candidates,lineThrough,legalPoint,reflect,rotate,scale} from '../.tools/geometry.js';
 import {solved} from '../.tools/types.js';
 import {fresh,validate,load,persist} from '../.tools/persistence.js';
-const {levels,chapters}=JSON.parse(fs.readFileSync(new URL('../src/content.json',import.meta.url)));
+const {levels,chapters}=JSON.parse(fs.readFileSync(new URL('../archive/corrections/content.json',import.meta.url)));
 test('315 puzzles, 21 chapitres, 15 niveaux chacun',()=>{assert.equal(levels.length,315);assert.equal(chapters.length,21);assert.equal(new Set(levels.map(l=>l.id)).size,315);for(const ch of chapters)assert.equal(levels.filter(l=>l.chapter===ch.id).length,15);});
 for(const level of levels)test(`Solution bornée et légale : ${level.id} ${level.title}`,()=>{
  const given=level.given.map(a=>a.p),board={points:[],lines:[...level.initialLines]};

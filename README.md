@@ -11,7 +11,7 @@ Jeu français de constructions sur une grille de 8 × 8. **21 chapitres et 315 p
 - La loupe permet de sélectionner les intersections rapprochées. ↗ amorce une droite depuis le point choisi.
 - Au clavier : flèches, `[` / `]` pour tous les croisements, Entrée pour poser, Espace pour chaque extrémité d’une droite, Échap pour désélectionner, Ctrl/Cmd + Z pour annuler.
 
-Seule la figure finale est évaluée. Toute méthode exacte convient, avec des traits auxiliaires libres. Aucun corrigé ne peut être ouvert avant la réussite du niveau. Les rappels restent généraux. Après réussite, une construction alternative peut être rejouée.
+Seule la figure finale est évaluée. Toute méthode exacte convient, avec des traits auxiliaires libres. Aucune correction n’est proposée dans le jeu. Les rappels restent généraux.
 
 ## Interface et apparence
 
@@ -53,9 +53,9 @@ Le temps actif commence à l’affichage du niveau ; les menus, le titre et l’
 
 Le bouton ⟳ efface les constructions du niveau sans perdre les réussites ou records ; l’effacement est annulable. Les réglages proposent aussi une remise à zéro globale avec confirmation et export préalable facultatif. Les préférences de couleurs et de son sont conservées.
 
-## Corrigés géométriques
+## Corrections archivées
 
-Les corrigés sont produits par des recettes qui dépendent des données de la figure. Les points hors grille proviennent de deux traits visibles dont les références sont enregistrées et surlignées à la lecture. Les tests déplacent les données d’entrée pour vérifier que les milieux, parallèles et perpendiculaires suivent la configuration. Les centres de carreaux et déplacements directement lisibles sont conservés dans les cas simples ; des variantes avancées utilisent des positions moins lisibles. Les segments donnés sont réutilisés ; un prolongement n’est ajouté que pour atteindre une intersection extérieure à leur portion visible. Une correction est un chemin possible, pas nécessairement le plus court.
+Les corrections ont été retirées de l’interface et des données livrées au navigateur. Leurs recettes, données et ancien lecteur sont conservés dans `archive/corrections/`, avec les outils de génération et de vérification. Ils restent utilisables pour contrôler la constructibilité des niveaux et pour un éventuel travail ultérieur, sans être proposés au joueur.
 
 ## Développer et construire
 

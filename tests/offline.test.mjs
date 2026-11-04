@@ -14,6 +14,10 @@ test('Service worker : précache complet, routes sous /trame/ et rechargement sa
  const request=async(url,mode='cors')=>{let response;events.fetch({request:{url,method:'GET',mode},respondWith:p=>response=p});return await response;};
  const home=await request(origin,'navigate');assert.ok(home.body.includes('TRAME'));
  assert.ok(home.body.includes('Construction juste.'));
+ assert.ok(!home.body.includes('Autre méthode'));
+ assert.ok(!home.body.includes('Une autre méthode pour ce niveau'));
+ assert.ok(!home.body.includes('Étape suivante →'));
+ assert.ok(!home.body.includes('Les diagonales de ce rectangle donnent le centre du petit carreau.'));
  assert.ok(home.body.includes('.workspace'));
  assert.ok(!/<script[^>]+src=/.test(home.body),'Le jeu doit rester autonome au rechargement');
  assert.ok(!/<link[^>]+rel="stylesheet"/.test(home.body));

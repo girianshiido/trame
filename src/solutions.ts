@@ -1,7 +1,7 @@
 import {legalPoint,lineThrough,gridLines,key,read,onSegment,type Board} from './geometry.js';
-import {solved,type Level,type Step} from './types.js';
+import {solved,type SolutionLevel,type Step} from './types.js';
 
-export function replaySolution(level:Level,steps:Step[]=level.steps):Board|null {
+export function replaySolution(level:SolutionLevel,steps:Step[]=level.steps):Board|null {
   const board:Board={points:[],lines:[...level.initialLines]},given=level.given.map(g=>g.p);
   for(const step of steps){
     if(step.kind==='point'){
@@ -21,7 +21,7 @@ export function replaySolution(level:Level,steps:Step[]=level.steps):Board|null 
 }
 
 /** A given segment is already active. Extend it only if later steps need its outside support. */
-export function reuseGivenStrokes(level:Level):Level {
+export function reuseGivenStrokes(level:SolutionLevel):SolutionLevel {
   let steps=[...level.steps];
   const supports=new Set(level.segments.map(([a,b])=>lineThrough(a,b)));
   const required=new Set(level.targets.filter(t=>t.kind==='line').map(t=>t.line));

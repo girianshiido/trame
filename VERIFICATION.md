@@ -1,7 +1,7 @@
-# Vérification de la version 1.2.2
+# Vérification de la version 1.2.3
 
 - TypeScript strict et compilation Vite réussis.
-- 353 tests automatiques : les 315 témoins des 21 chapitres restent légaux et bornés ; relations géométriques, figures complètes, sauvegardes, thèmes, progression et cache hors connexion sont contrôlés.
+- 354 tests automatiques : les 315 témoins des 21 chapitres restent légaux et bornés ; relations géométriques, figures complètes, sauvegardes, thèmes, progression et cache hors connexion sont contrôlés.
 - Les images de segments et triangles exigent leurs sommets et leurs côtés, avec validation indépendante de la méthode et de l’ordre des constructions.
 - Corrigés reconstruits à partir des données géométriques, avec provenance visible de chaque intersection hors grille. Les tests déplacent les points flottants pour vérifier les recettes de milieu, parallèle, perpendiculaire et rapports. Les segments fournis sont réutilisés ; leur support n’est prolongé que si nécessaire.
 - Quinze niveaux de tangentes : cercles entièrement dans le cadre, contacts et tangences vérifiés exactement. Les configurations externes et communes fournissent un contact ou une première tangente pour permettre une construction par traits droits sans lecture de coordonnées cachées. Le joueur ne trace aucun cercle.
@@ -15,10 +15,12 @@
 - La dernière réussite d’un chapitre a été effectuée dans le navigateur : retour automatique au parcours, coche « Terminé », chapitre suivant ouvert, puis accès libre aux quinze niveaux et sélection d’un ancien niveau vérifiés.
 - Loupe : les candidats couvrent exactement le rectangle agrandi, sans limite aux huit plus proches ; deux tests de régression couvrent les croisements auparavant omis.
 - Zoom par pincement et double tap désactivé ; jeu et écran titre sans défilement, menus avec leur propre défilement. Les contrôles tactiles physiques et VoiceOver restent à vérifier sur appareil réel.
-- Les garanties de la version 1.0 restent couvertes : traits de départ actifs, coordonnées rationnelles exactes, points dans le cadre, méthode libre, corrigés réservés aux niveaux réussis et PWA autonome.
+- Les garanties de la version 1.0 restent couvertes : traits de départ actifs, coordonnées rationnelles exactes, points dans le cadre, méthode libre, absence de corrections dans le jeu et PWA autonome.
 
 Les sauvegardes conservent le format 1. Les nouvelles options sont facultatives dans les fichiers plus anciens. Les anciennes réussites ne sont pas supprimées par l’enrichissement des objectifs de construction.
 
 Le Grand Atelier reste le chapitre final (21), après les tangentes (20). Les anciens identifiants de ces deux chapitres sont migrés une seule fois, y compris dans les imports : réussites, brouillons, chronos et position courante sont conservés. Le dernier défi combine centre de gravité et tangente.
 
 Les niveaux rouverts repartent avec la figure de départ et un nouvel essai chronométré, qu’ils aient été réussis ou non. Les réussites et records restent indépendants du dessin affiché. L’atelier libre conserve son dessin.
+
+Les accès « Autre méthode » et le lecteur de corrections sont retirés, y compris après réussite et dans les réglages. Les témoins et l’ancien lecteur sont archivés séparément ; les données de correction ne sont plus incluses dans la compilation du jeu. Les témoins archivés restent rejoués par les tests de constructibilité.

@@ -1,0 +1,5 @@
+    for(const k of m.highlight||[]){
+      const given=m.level.segments.find(([a,b])=>key(cross(read(a),read(b)))===k&&(!m.highlightAt||onSegment(read(m.highlightAt),read(a),read(b))));
+      if(given&&!m.board.lines.includes(k))line(this.screen(read(given[0])),this.screen(read(given[1])),t.accent+'dc',3.2);
+      else infinite(k,t.accent+'dc',2.8);
+    }

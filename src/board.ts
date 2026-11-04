@@ -1,9 +1,9 @@
-import {candidates,key,xy,read,clip,cross,onSegment,type H,type Board} from './geometry.js';
+import {candidates,key,xy,read,clip,cross,type H,type Board} from './geometry.js';
 import type {Level} from './types.js';
 import {palette,type ThemeId} from './themes.js';
 import {placeLabel,type Box,type V} from './labels.js';
 
-type Model={level:Level;board:Board;selected:string|null;preview:H|null;hover:H|null;complete:boolean;highlight?:string[];highlightAt?:string};
+type Model={level:Level;board:Board;selected:string|null;preview:H|null;hover:H|null;complete:boolean};
 export function solutionName(label:string):string {
   if(/^Milieu (\d+)$/.test(label))return 'M'+label.slice(7);
   if(label.startsWith('Milieu'))return 'M';
@@ -128,11 +128,6 @@ export class GridView {
     for(const l of m.board.lines){
       const initial=m.level.initialLines.includes(l);
       infinite(l,initial?t.given+'b8':t.accent+'a6',2.1,initial?[7,4]:[]);
-    }
-    for(const k of m.highlight||[]){
-      const given=m.level.segments.find(([a,b])=>key(cross(read(a),read(b)))===k&&(!m.highlightAt||onSegment(read(m.highlightAt),read(a),read(b))));
-      if(given&&!m.board.lines.includes(k))line(this.screen(read(given[0])),this.screen(read(given[1])),t.accent+'dc',3.2);
-      else infinite(k,t.accent+'dc',2.8);
     }
     if(m.complete)for(const target of m.level.targets){
       if(target.kind==='line'&&target.segment){

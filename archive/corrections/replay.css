@@ -1,0 +1,5 @@
+.replay{display:block;width:min(100%,370px);aspect-ratio:1;margin:auto;border:1px solid var(--border);border-radius:12px}
+.step-text{min-height:45px}
+.replay-controls{display:flex;align-items:center;justify-content:space-between;gap:10px;font-size:10px}
+.replay-controls>span{color:var(--muted);white-space:nowrap}
+.replay-controls .primary{padding:11px;font-size:10px}
