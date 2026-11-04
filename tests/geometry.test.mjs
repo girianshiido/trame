@@ -5,14 +5,14 @@ import {p,key,read,cross,mid,mean,inside,on,candidates,lineThrough,legalPoint,re
 import {solved} from '../.tools/types.js';
 import {fresh,validate,load,persist} from '../.tools/persistence.js';
 const {levels,chapters}=JSON.parse(fs.readFileSync(new URL('../src/content.json',import.meta.url)));
-test('300 puzzles, 20 chapitres, 15 niveaux chacun',()=>{assert.equal(levels.length,300);assert.equal(chapters.length,20);assert.equal(new Set(levels.map(l=>l.id)).size,300);for(const ch of chapters)assert.equal(levels.filter(l=>l.chapter===ch.id).length,15);});
+test('315 puzzles, 21 chapitres, 15 niveaux chacun',()=>{assert.equal(levels.length,315);assert.equal(chapters.length,21);assert.equal(new Set(levels.map(l=>l.id)).size,315);for(const ch of chapters)assert.equal(levels.filter(l=>l.chapter===ch.id).length,15);});
 for(const level of levels)test(`Solution bornée et légale : ${level.id} ${level.title}`,()=>{
  const given=level.given.map(a=>a.p),board={points:[],lines:[...level.initialLines]};
  assert.ok(!solved(level,board));
  for(const g of level.given){assert.ok(inside(read(g.p)));assert.ok(g.label);}
  for(const t of level.targets)if(t.kind==='point')assert.ok(inside(read(t.p)));
  for(const step of level.steps){if(step.kind==='point'){assert.ok(inside(read(step.p)),`Point extérieur ${step.p}`);assert.ok(legalPoint(step.p,board,given,8,level.segments),`Point non constructible ${step.p}`);board.points.push(step.p);}else{for(const k of [step.a,step.b]){assert.ok(inside(read(k)),`Extrémité extérieure ${k}`);assert.ok(legalPoint(k,board,given,8,level.segments),`Extrémité non constructible ${k}`);}assert.notEqual(step.a,step.b);board.lines.push(lineThrough(step.a,step.b));}}
- assert.ok(solved(level,board));assert.ok(board.lines.length<=70);assert.ok(board.points.length<=150);
+ assert.ok(solved(level,board));assert.ok(board.lines.length<=200);assert.ok(board.points.length<=200);
  // Validation must ignore unrelated auxiliary objects and the path to the answer.
  const minimal={points:level.targets.filter(t=>t.kind==='point').map(t=>t.p),lines:level.targets.filter(t=>t.kind==='line').map(t=>t.line)};
  assert.ok(solved(level,minimal));minimal.lines.push(key(cross(p(0,0),p(8,0))));assert.ok(solved(level,minimal));

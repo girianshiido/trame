@@ -3,7 +3,7 @@ import assert from 'node:assert/strict';
 import {GridView,solutionName} from '../.tools/board.js';
 import {themes} from '../.tools/themes.js';
 
-test('Rendu : pas de graduations ; réponses nommées seulement après réussite, dans les cinq thèmes',()=>{
+test('Rendu : pas de graduations ; réponses nommées seulement après réussite, dans les six thèmes',()=>{
   const texts=[],strokes=[];
   const ctx=new Proxy({fillText:text=>texts.push(text),stroke:()=>strokes.push(ctx.strokeStyle),measureText:text=>({width:text.length*8}),createLinearGradient:()=>({addColorStop:()=>{}})},{get:(target,name)=>name in target?target[name]:()=>{}});
   const canvas={width:0,height:0,getContext:()=>ctx,getBoundingClientRect:()=>({width:365,left:0,top:0})};

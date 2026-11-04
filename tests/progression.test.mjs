@@ -19,12 +19,12 @@ test('Progression complète : un seul nouveau niveau par réussite, chapitre sui
     assert.ok(canPlay(level,levels,save));
     if(index+1<levels.length)assert.ok(!canPlay(levels[index+1],levels,save));
     const chapter=Math.floor(index/15)+1;
-    if(index%15!==14&&chapter<20)assert.ok(!canVisitChapter(chapter+1,levels,save));
+    if(index%15!==14&&chapter<21)assert.ok(!canVisitChapter(chapter+1,levels,save));
     finish(save,level);
-    if(index%15===14&&chapter<20)assert.ok(canVisitChapter(chapter+1,levels,save));
+    if(index%15===14&&chapter<21)assert.ok(canVisitChapter(chapter+1,levels,save));
   });
   assert.equal(nextPuzzle(levels,save),undefined);
-  assert.equal(levels.filter(l=>canPlay(l,levels,save)).length,300);
+  assert.equal(levels.filter(l=>canPlay(l,levels,save)).length,315);
 });
 test('Anciennes réussites : rejouables sans contourner les prérequis manquants',()=>{
   const save=fresh();finish(save,levels[45]);save.current=levels[46].id;

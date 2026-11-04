@@ -1,4 +1,6 @@
 import fs from 'node:fs';
+import {buildGeometricSolution} from './geometric-solutions.mjs';
+import {reuseGivenStrokes} from '../.tools/solutions.js';
 import {p,key,read,cross,norm,on,inside,intersection,grid,gridLines,mid,mean,scale,affine,rotate,reflect,xy,candidates,lineThrough} from '../.tools/geometry.js';
 const chapters=[
  ['Premiers traits','Apprivoiser les deux gestes','01','Observer, compter et relier : une petite grille suffit pour faire de grandes découvertes.',['Point','Droite','Intersection']],
@@ -20,34 +22,17 @@ const chapters=[
  ['Centres de surfaces','Triangles, trapèzes et figures creuses','17','Une plaque uniforme se décompose en morceaux. Leurs centres sont pondérés par leurs aires, jamais par le nombre de sommets.',['Surface uniforme','Barycentre','Aire']],
  ['Points remarquables','Trois familles se rencontrent','18','Médianes, hauteurs et médiatrices cachent des points de rencontre particuliers.',['Orthocentre','Cercle circonscrit','Centre de gravité']],
  ['Perspectives','Des points qui se répondent','19','Des couples de points alignés vers un même centre permettent de reconstruire une figure.',['Perspective','Alignement']],
- ['Le grand atelier','Croiser toutes les idées','20','Milieux, équilibres et incidences se combinent. Les outils restent les mêmes ; le regard a changé.',['Varignon','Pappus','Barycentre']]
+ ['Le grand atelier','Croiser toutes les idées','20','Milieux, équilibres et incidences se combinent. Les outils restent les mêmes ; le regard a changé.',['Varignon','Pappus','Barycentre']],
+ ['Tangentes aux cercles','Au point de contact','21','Une tangente est perpendiculaire au rayon au point de contact. Les cercles sont donnés comme figures de référence ; on construit toujours avec les points et les droites.',['Tangente','Cercle','Homothétie']]
 ].map((a,i)=>({id:i+1,title:a[0],subtitle:a[1],icon:a[2],intro:a[3],terms:a[4]}));
 const nodes=grid(); const gl=gridLines();
-const lineCache=new Map();
 function transform(a,r){let q=a;for(let i=0;i<r;i++)q=norm(8n*q[2]-q[1],q[0],q[2]);return q;}
-function baseLines(pool){const id=pool.map(key).join(';');if(lineCache.has(id))return lineCache.get(id);const out=new Map();for(let i=0;i<pool.length;i++)for(let j=i+1;j<pool.length;j++){const a=pool[i],b=pool[j];if(key(a)===key(b))continue;const l=cross(a,b),k=key(l);if(!out.has(k))out.set(k,{l,a,b});}const res=[...out.values()];lineCache.set(id,res);return res;}
 class Puzzle {
  constructor(ch,j,r){this.ch=ch;this.j=j;this.r=r;this.given=[];this.segments=[];this.initialLines=[];this.targets=[];this.steps=[];this.board={points:[],lines:[]};this.title='';this.goal='';this.lesson='';this.hints=[];}
  givenPoint(name,a){this.given.push({p:key(a),label:name});return a;}
  shape(names,ps,closed=true){ps.forEach((a,i)=>this.givenPoint(names[i],a));for(let i=0;i<ps.length-(closed?0:1);i++)this.segments.push([key(ps[i]),key(ps[(i+1)%ps.length])]);return ps;}
- line(a,b,text='Relier ces deux points et prolonger jusqu’au cadre.'){if(key(a)===key(b))throw Error('line degenerate');if(!inside(a)||!inside(b)){const l=cross(a,b),qs=gl.map(g=>intersection(l,g)).filter(q=>q&&inside(q));const unique=[...new Map(qs.map(q=>[key(q),q])).values()];if(unique.length<2)throw Error('Line outside frame');[a,b]=unique;}this.need(a);this.need(b);const k=key(cross(a,b));if(!this.board.lines.includes(k)){this.steps.push({kind:'line',a:key(a),b:key(b),text});this.board.lines.push(k);}return cross(a,b);}
- need(t){if(!inside(t))throw Error(`Outside ${this.ch} ${this.j} ${key(t)}`);const k=key(t);if(this.given.some(a=>a.p===k)||this.board.points.includes(k))return;
-  if(!candidates(this.board,this.given.map(a=>a.p),8,this.segments).has(k)){
-   const pool=[...this.given.map(a=>read(a.p)),...this.board.points.map(read),...nodes];const ls=baseLines(pool);const hits=ls.filter(a=>on(a.l,t));
-   const existing=[...gl,...this.board.lines.map(read)].find(l=>on(l,t));
-   if(existing&&hits.some(h=>key(h.l)!==key(existing))){const h=hits.find(h=>key(h.l)!==key(existing));this.line(h.a,h.b,'Faire apparaître une intersection avec une droite déjà présente.');}
-   else if(hits.length>=2){this.line(hits[0].a,hits[0].b,'Tracer une première droite auxiliaire.');this.line(hits[1].a,hits[1].b,'Croiser avec une deuxième droite auxiliaire.');}
-   else {
-    // A bounded two-stage incidence construction: every auxiliary point is in the square.
-    if(hits.length) this.line(hits[0].a,hits[0].b,'Tracer une direction passant par le point recherché.');
-    const directions=new Set([...gl,...this.board.lines.map(read)].filter(l=>on(l,t)).map(key));
-    outer:for(const s of pool){if(key(s)===k)continue;const st=cross(s,t);if(directions.has(key(st)))continue;for(const g of gl){const q=intersection(st,g);if(!q||!inside(q)||key(q)===k||key(q)===key(s))continue;const h=ls.find(a=>on(a.l,q)&&key(a.l)!==key(g));if(!h)continue;this.line(h.a,h.b,'Construire un repère auxiliaire sur une ligne du quadrillage.');this.need(q);this.line(s,q,'Utiliser ce repère pour obtenir la direction recherchée.');directions.add(key(st));if(directions.size>=2)break outer;break;}}
-    if(directions.size<2)throw Error(`No bounded construction for ${this.ch}/${this.j}: ${k}`);
-   }
-  }
-  if(!candidates(this.board,this.given.map(a=>a.p),8,this.segments).has(k))throw Error(`Illegal witness ${k}`);
-  this.steps.push({kind:'point',p:k,text:'Marquer exactement l’intersection.'});this.board.points.push(k);
- }
+ line(a,b){if(key(a)===key(b))throw Error('Undefined line');return cross(a,b);}
+ need(t){if(!t||!inside(t))throw Error(`Target outside frame ${this.ch}/${this.j}`);}
  targetPoint(a,label='Point recherché'){this.need(a);const k=key(a);if(this.given.some(g=>g.p===k)){throw Error(`Target already given ${this.ch}/${this.j}`);}this.targets.push({kind:'point',p:k,label});}
  targetLine(a,b,label='Droite recherchée'){this.line(a,b);this.targets.push({kind:'line',line:key(cross(a,b)),label});}
  finish(){const tx=k=>key(transform(read(k),this.r));const tl=k=>{const l=read(k);const pts=[];for(const q of nodes)if(on(l,q))pts.push(q);if(pts.length>=2)return key(cross(transform(pts[0],this.r),transform(pts[1],this.r)));const [a,b,c]=l;let r=l;for(let i=0;i<this.r;i++)r=norm(-r[1],r[0],r[2]+8n*r[1]);return key(r);};
@@ -136,6 +121,66 @@ function enrichFinalFigure(level){
  level.par=level.steps.length;
  return level;
 }
-const levels=[];for(let ch=1;ch<=20;ch++){for(let r=0;r<3;r++)for(let j=0;j<5;j++){try{let level=make(ch,j,r);if(r===2&&ch!==11&&ch!==17){const shrink=q=>scale(read(q),P(4,4),3,4),sp=q=>key(shrink(q)),sl=q=>{const [a,b,c]=read(q);return key(norm(4n*a,4n*b,3n*c-4n*a-4n*b));};level={...level,given:level.given.map(g=>({...g,p:sp(g.p)})),segments:level.segments.map(s=>s.map(sp)),initialLines:level.initialLines.map(sl),targets:level.targets.map(t=>t.kind==='point'?{...t,p:sp(t.p)}:{...t,line:sl(t.line)})};const planner=new Puzzle(ch,j,0);planner.given=level.given;planner.segments=level.segments;planner.initialLines=level.initialLines;planner.board.lines=[...level.initialLines];for(const st of level.steps){if(st.kind==='point')planner.need(shrink(st.p));else planner.line(shrink(st.a),shrink(st.b),st.text);}level.steps=planner.steps;level.par=planner.steps.length;}levels.push(enrichFinalFigure(level));}catch(e){console.error(`Chapter ${ch}, scene ${j}, rotation ${r}`);throw e;}}console.log(`Chapitre ${ch} : 15 solutions bornées.`);}
+const levels=[];for(let ch=1;ch<=20;ch++){for(let r=0;r<3;r++)for(let j=0;j<5;j++){try{let level=make(ch,j,r);if(r===2&&ch!==1&&ch!==11&&ch!==15&&ch!==17){const shrink=q=>scale(read(q),P(4,4),7,11),sp=q=>key(shrink(q)),sl=q=>{const [a,b,c]=read(q);return key(norm(11n*a,11n*b,7n*c-16n*a-16n*b));};level={...level,given:level.given.map(g=>({...g,p:sp(g.p)})),segments:level.segments.map(s=>s.map(sp)),initialLines:level.initialLines.map(sl),targets:level.targets.map(t=>t.kind==='point'?{...t,p:sp(t.p)}:{...t,line:sl(t.line)})};level.steps=[];level.par=0;}level=reuseGivenStrokes(buildGeometricSolution(enrichFinalFigure(level)));levels.push(level);}catch(e){console.error(`Chapter ${ch}, scene ${j}, rotation ${r}`);throw e;}}console.log(`Chapitre ${ch} : 15 solutions bornées.`);}
+function givenPointFor(level,label){return read(level.given.find(g=>g.label===label).p);}
+function makeTangent(number){
+ const z=new Puzzle(21,0,0),circles=[];
+ const offset=(o,x,y,d=1)=>affine(o,P(x,y,d),P(0,0));
+ const circle=(o,rn,rd=1,label='c')=>{circles.push({center:key(o),radius:[rn,rd],label});return circles.length-1;};
+ const given=(name,q)=>z.givenPoint(name,q);
+ const radius=(o,rn,rd,name)=>{const r=given(name,offset(o,0,rn,rd));z.segments.push([key(o),key(r)]);return r;};
+ const tangent=(o,t,labels,ids)=>{
+  z.targetLine(t,rotate(o,t),'Tangente');
+  const target=z.targets[z.targets.length-1];target.circles=ids;target.contacts=labels;
+ };
+ const at=(o,t,id,label='T')=>tangent(o,t,[{p:key(t),label}],[id]);
+ if(number<=5){
+  const specs=[{o:P(4,4),r:[2,1],t:P(6,4)},{o:P(3,3),r:[2,1],t:P(3,5)},{o:P(3,3),r:[5,2],t:P(9,10,2)},{o:P(4,4),r:[13,6],t:P(29,36,6)},{o:P(2,4),r:[2,1],t:P(0,4)}];
+  const {o,r,t}=specs[number-1];given('O',o);given('A',t);const id=circle(o,...r);
+  if(number!==2)z.segments.push([key(o),key(t)]);
+  z.title=['Le rayon et la tangente','En haut du cercle','Une tangente inclinée','Un contact décalé','Le cadre est tangent'][number-1];
+  z.goal='Trace la tangente au cercle en A. O est son centre.';at(o,t,id,'A');
+ }else if(number===6){
+  const o=given('O',P(4,4)),id=circle(o,5,2);radius(o,5,2,'R');
+  const u=given('U',P(0,3)),v=given('V',P(4,0));z.segments.push([key(u),key(v)]);
+  z.title='Deux tangentes parallèles';z.goal='Trace les deux tangentes au cercle parallèles à (UV). Le cercle a pour centre O et passe par R.';
+  at(o,P(11,12,2),id,'T1');at(o,P(5,4,2),id,'T2');
+ }else if(number<=10){
+  const specs=[{o:P(5,8,2),r:[3,2],p:P(5,4),up:P(17,26,5),down:P(17,14,5)},{o:P(3,4),r:[2,1],p:P(19,12,3),up:P(21,28,5),down:P(21,12,5)},{o:P(3,3),r:[1,1],p:P(12,13,3),up:P(68,99,25),down:P(4,3)},{o:P(3,4),r:[3,1],p:P(8,4),up:P(24,32,5),down:P(24,8,5)}];
+  const {o,r,p:pt,up,down}=specs[number-7];given('O',o);given('P',pt);const id=circle(o,...r);radius(o,...r,'R');
+  z.title=['Depuis un point extérieur','Les deux tangentes','Un point extérieur oblique','Depuis le bord du cadre'][number-7];
+  z.goal=number===7?'Trace la tangente passant par P dont le contact est au-dessus de (OP). O est le centre du cercle, qui passe par R.':'Trace les deux tangentes au cercle passant par P. O est son centre et R est sur le cercle.';
+  at(o,up,id,'T1');if(number!==7)at(o,down,id,'T2');
+ }else{
+  let o1,o2,r1,r2;
+  if(number===11){o1=P(2,4);o2=P(6,4);r1=[1,1];r2=[1,1];}
+  if(number===12){o1=P(2,2);o2=P(5,6);r1=[1,1];r2=[1,1];}
+  if(number===13){o1=P(2,4);o2=P(9,8,2);r1=[2,1];r2=[1,2];}
+  if(number===14){o1=P(5,8,2);o2=P(5,4);r1=[1,1];r2=[1,1];}
+  if(number===15){o1=P(23,40,10);o2=P(53,40,10);r1=[21,10];r2=[3,10];}
+  given('O1',o1);given('O2',o2);const c1=circle(o1,...r1,'c1'),c2=circle(o2,...r2,'c2');radius(o1,...r1,'R1');radius(o2,...r2,'R2');
+  z.title=['Deux cercles de même rayon','Les centres en diagonale','Deux rayons différents','Les tangentes qui se croisent','Les quatre tangentes communes'][number-11];
+  z.goal=number===14?'Trace les deux tangentes communes qui croisent le segment [O1O2]. Les cercles sont centrés en O1 et O2 et passent par R1 et R2.':number===15?'Trace les quatre tangentes communes aux deux cercles. O1 et O2 sont les centres, R1 et R2 fixent les rayons.':'Trace les deux tangentes communes extérieures : les centres restent du même côté de chaque droite. O1 et O2 sont les centres ; R1 et R2 fixent les rayons.';
+  const contact=(o,r,nx,ny,den)=>offset(o,r[0]*nx,r[0]*ny,r[1]*den);
+  const pair=(nx,ny,den,internal,index)=>{
+   const a=contact(o1,r1,nx,ny,den),b=contact(o2,r2,internal?-nx:nx,internal?-ny:ny,den);
+   z.targetLine(a,b,'Tangente commune');const t=z.targets[z.targets.length-1];t.circles=[c1,c2];t.contacts=[{p:key(a),label:'T'+index},{p:key(b),label:'U'+index}];
+  };
+  if(number===11){pair(0,1,1,false,1);pair(0,-1,1,false,2);}
+  if(number===12){pair(-4,3,5,false,1);pair(4,-3,5,false,2);}
+  if(number===13){pair(3,4,5,false,1);pair(3,-4,5,false,2);}
+  if(number===14){pair(4,3,5,true,1);pair(4,-3,5,true,2);}
+  if(number===15){given('S',P(29,20,5));given('I',P(197,160,40));pair(3,4,5,false,1);pair(3,-4,5,false,2);pair(4,3,5,true,3);pair(4,-3,5,true,4);z.goal+=' S et I, les centres d’homothétie, sont donnés.';}
+ }
+ z.hints=['Une tangente est perpendiculaire au rayon au point de contact.','Les cercles sont des figures de référence données : aucun cercle auxiliaire ne se trace. Les points donnés s’utilisent sans mesurer leurs coordonnées.'];
+ if(number>=11)z.hints.push('Les centres d’homothétie de deux cercles relient les points de contact correspondants.');
+ const level=z.finish();level.id='21-'+number;level.number=number;level.circles=circles;level.difficulty=Math.min(5,2+Math.floor((number-1)/4));
+ if(number===6){const a=level.targets[0].contacts[0].p;level.given.push({p:a,label:'A'});level.goal='A est sur le cercle. Trace la tangente en A puis la tangente parallèle opposée. O est le centre.';}
+ if(number>=7&&number<=10){const a=key(number===7?P(17,26,5):number===8?P(21,28,5):number===9?P(68,99,25):P(24,32,5));level.given.push({p:a,label:'A'});level.segments.push([key(givenPointFor(level,'P')),a]);const o=givenPointFor(level,'O'),down=number===7?P(17,14,5):number===8?P(21,12,5):number===9?P(4,3):P(24,8,5);level.targets=[{kind:'line',line:key(cross(down,rotate(o,down))),label:'Seconde tangente',circles:[0],contacts:[{p:key(down),label:'B'}]}];level.goal='La tangente (PA) est donnée. Construis l’autre tangente au cercle passant par P. O est le centre.';}
+ if(number>=12){level.given.push({p:level.targets[0].contacts[0].p,label:'A'});level.goal=(number===14?'A est le contact d’une tangente commune intérieure. Trace les deux tangentes communes qui croisent [O1O2].':number===15?'A et B sont les contacts, sur le premier cercle, d’une tangente extérieure et d’une tangente intérieure. Construis les quatre tangentes communes.':'A est le contact d’une tangente commune extérieure. Trace les deux tangentes communes extérieures.');if(number===15){level.given=level.given.filter(g=>!['S','I'].includes(g.label));level.given.push({p:level.targets[2].contacts[0].p,label:'B'});}}
+ return reuseGivenStrokes(buildGeometricSolution(level));
+}
+for(let n=1;n<=15;n++){try{levels.push(makeTangent(n));}catch(e){console.error('Tangente',n);throw e;}}
+console.log('Chapitre 21 : 15 tangentes et constructions bornées.');
 fs.writeFileSync(new URL('../src/content.json',import.meta.url),JSON.stringify({chapters,levels}));
 console.log(`${levels.length} niveaux écrits.`);

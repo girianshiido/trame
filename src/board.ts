@@ -1,8 +1,9 @@
-import {candidates,key,xy,read,clip,cross,type H,type Board} from './geometry.js';
+import {candidates,key,xy,read,clip,cross,onSegment,type H,type Board} from './geometry.js';
 import type {Level} from './types.js';
 import {palette,type ThemeId} from './themes.js';
+import {placeLabel,type Box,type V} from './labels.js';
 
-type Model={level:Level;board:Board;selected:string|null;preview:H|null;hover:H|null;complete:boolean};
+type Model={level:Level;board:Board;selected:string|null;preview:H|null;hover:H|null;complete:boolean;highlight?:string[];highlightAt?:string};
 export function solutionName(label:string):string {
   if(/^Milieu (\d+)$/.test(label))return 'M'+label.slice(7);
   if(label.startsWith('Milieu'))return 'M';
@@ -80,18 +81,24 @@ export class GridView {
       c.beginPath();c.arc(x,y,r,0,Math.PI*2);c.fillStyle=color;c.fill();
       c.strokeStyle=t.board;c.lineWidth=1.8;c.stroke();
     };
-    const labels:{x:number;y:number;w:number}[]=[];
+    const labels:Box[]=[];
+    const circleInk=(m.level.circles||[]).map(circle=>({center:this.screen(read(circle.center)),radius:circle.radius[0]/circle.radius[1]*this.unit}));
+    const strokes:[V,V][]=m.level.segments.map(([a,b])=>[this.screen(read(a)),this.screen(read(b))]);
+    for(const k of m.board.lines){const ends=clip(read(k));if(ends.length===2)strokes.push([[this.pad+ends[0][0]*this.unit,sz-this.pad-ends[0][1]*this.unit],[this.pad+ends[1][0]*this.unit,sz-this.pad-ends[1][1]*this.unit]]);}
+    const visiblePoints=[...m.level.given.map(g=>this.screen(read(g.p))),...m.board.points.map(k=>this.screen(read(k)))];
+    if(m.complete)for(const target of m.level.targets){if(target.kind==='point')visiblePoints.push(this.screen(read(target.p)));else for(const contact of target.contacts||[])visiblePoints.push(this.screen(read(contact.p)));}
+    const centroid=m.level.given.length?m.level.given.reduce((v,g)=>{const q=this.screen(read(g.p));return [v[0]+q[0]/m.level.given.length,v[1]+q[1]/m.level.given.length];},[0,0]):[sz/2,sz/2];
     const label=(a:H,text:string,color:string)=>{
-      const [x,y]=this.screen(a);
+      const point=this.screen(a),[x,y]=point;
       c.font=`650 ${sz<350?12:14}px system-ui,sans-serif`;
-      const w=c.measureText(text).width;
-      const placements=[[x+9,y-11],[x+9,y+16],[x-w-9,y-11],[x-w-9,y+16]];
-      let pos=placements.find(([px,py])=>px>=6&&px+w<sz-5&&py>=15&&py<sz-7&&!labels.some(b=>Math.abs(b.y-py)<17&&px<b.x+b.w+4&&px+w>b.x-4));
-      pos||=[Math.min(sz-w-6,Math.max(6,x+9)),Math.min(sz-10,Math.max(16,y-12))];
-      labels.push({x:pos[0],y:pos[1],w});
+      const w=c.measureText(text).width;let away:[number,number]=[0,0],neighbors=0;
+      for(const [u,v]of strokes){if(Math.hypot(u[0]-x,u[1]-y)<1){away[0]+=x-v[0];away[1]+=y-v[1];neighbors++;}if(Math.hypot(v[0]-x,v[1]-y)<1){away[0]+=x-u[0];away[1]+=y-u[1];neighbors++;}}
+      for(const circle of circleInk)if(Math.abs(Math.hypot(x-circle.center[0],y-circle.center[1])-circle.radius)<2){away[0]+=x-circle.center[0];away[1]+=y-circle.center[1];neighbors++;}
+      if(!neighbors)away=[x-centroid[0],y-centroid[1]];
+      const box=placeLabel({point,width:w,size:sz,boxes:labels,points:visiblePoints,segments:strokes,circles:circleInk,away});labels.push(box);
       c.textAlign='left';c.textBaseline='middle';c.lineJoin='round';c.lineWidth=4.5;
-      c.strokeStyle=t.board;c.strokeText(text,pos[0],pos[1]);
-      c.fillStyle=color;c.fillText(text,pos[0],pos[1]);
+      c.strokeStyle=t.board;c.strokeText(text,box.x,box.y+box.h/2);
+      c.fillStyle=color;c.fillText(text,box.x,box.y+box.h/2);
     };
     for(let i=0;i<=8;i++){
       const x=this.pad+i*this.unit,y=sz-this.pad-i*this.unit;
@@ -102,6 +109,10 @@ export class GridView {
     c.fillStyle=t.node;
     for(let i=0;i<=8;i++)for(let j=0;j<=8;j++){
       c.beginPath();c.arc(this.pad+i*this.unit,sz-this.pad-j*this.unit,1.45,0,Math.PI*2);c.fill();
+    }
+    for(const circle of circleInk){
+      c.beginPath();c.arc(circle.center[0],circle.center[1],circle.radius,0,Math.PI*2);
+      c.fillStyle=t.secondary+'07';c.fill();c.strokeStyle=t.secondary+'b5';c.lineWidth=1.8;c.setLineDash([5,3]);c.stroke();c.setLineDash([]);
     }
     const seg=m.level.segments;
     if(seg.length>=3&&seg[0][0]===seg[seg.length-1][1]){
@@ -117,6 +128,11 @@ export class GridView {
     for(const l of m.board.lines){
       const initial=m.level.initialLines.includes(l);
       infinite(l,initial?t.given+'b8':t.accent+'a6',2.1,initial?[7,4]:[]);
+    }
+    for(const k of m.highlight||[]){
+      const given=m.level.segments.find(([a,b])=>key(cross(read(a),read(b)))===k&&(!m.highlightAt||onSegment(read(m.highlightAt),read(a),read(b))));
+      if(given&&!m.board.lines.includes(k))line(this.screen(read(given[0])),this.screen(read(given[1])),t.accent+'dc',3.2);
+      else infinite(k,t.accent+'dc',2.8);
     }
     if(m.complete)for(const target of m.level.targets){
       if(target.kind==='line'&&target.segment){
@@ -135,6 +151,10 @@ export class GridView {
       if(target.kind==='point'&&m.board.points.includes(target.p)){
         dot(read(target.p),t.win,5.5,true);label(read(target.p),solutionName(target.label),t.win);
       }
+    }
+    if(m.complete){
+      const annotated=new Set([...m.level.given.map(g=>g.p),...m.level.targets.filter(g=>g.kind==='point').map(g=>g.p)]);
+      for(const target of m.level.targets)if(target.kind==='line')for(const contact of target.contacts||[]){if(annotated.has(contact.p))continue;annotated.add(contact.p);dot(read(contact.p),t.win,4.5);label(read(contact.p),contact.label,t.win);}
     }
     if(m.selected){
       dot(read(m.selected),t.secondary,5,true);

@@ -1,6 +1,6 @@
 # TRAME · L’atelier des géomètres
 
-Jeu français de constructions sur une grille de 8 × 8. **20 chapitres et 300 puzzles**, atelier libre, encyclopédie dessinée, sauvegardes locales et PWA hors connexion.
+Jeu français de constructions sur une grille de 8 × 8. **21 chapitres et 315 puzzles**, atelier libre, encyclopédie dessinée, sauvegardes locales et PWA hors connexion.
 
 ## Jouer
 
@@ -17,7 +17,7 @@ Seule la figure finale est évaluée. Toute méthode exacte convient, avec des t
 
 Sur téléphone, la grille occupe presque toute la largeur, avec adaptation à la hauteur réellement disponible sous les barres du navigateur. Seuls la consigne, un en-tête compact, annuler/rétablir, la précision et le menu inférieur restent visibles pendant le jeu. Aucun nombre n’est dessiné sur les axes. Le zoom par pincement et double tap est désactivé. Le jeu et le titre ne défilent pas ; les menus défilent indépendamment. Le logo TRAME revient à l’écran titre, qui propose de commencer ou continuer.
 
-Cinq thèmes sont disponibles et mémorisés : Aurore, Lagon, Nocturne, Citrus et Papier. Les traits auxiliaires sont translucides. Une fois la construction juste, les noms des points réponses et les segments finaux apparaissent. Dans les transformations de figures, les sommets images seuls ne suffisent pas : il faut aussi tracer les côtés demandés.
+Six thèmes sont disponibles et mémorisés : Aurore, Lagon, Nocturne, Citrus, Papier et Boréal. Les traits auxiliaires sont translucides. Une fois la construction juste, les noms des points réponses et les segments finaux apparaissent. Dans les transformations de figures, les sommets images seuls ne suffisent pas : il faut aussi tracer les côtés demandés.
 
 ## Parcours
 
@@ -41,8 +41,21 @@ Cinq thèmes sont disponibles et mémorisés : Aurore, Lagon, Nocturne, Citrus e
 18. Points remarquables
 19. Perspectives
 20. Le grand atelier : Varignon, masses pondérées, Pappus
+21. Tangentes aux cercles : contacts donnés, deuxième tangente à retrouver et tangentes communes
+
+Le chapitre des tangentes fournit les cercles et les contacts utiles : aucun cercle auxiliaire ne se trace. Les points restent ceux des nœuds et des croisements de traits droits. Les cas avancés donnent un premier contact ou une première tangente pour faire construire les autres sans donnée cachée.
 
 Les séries reviennent sur les concepts dans d’autres orientations, puis avec des configurations réduites et décalées du quadrillage. Les chapitres 11 et 17 suivent une progression propre, des masses simples aux fils composés et des triangles aux plaques à encoches. Les niveaux se débloquent un par un. Terminer les quinze niveaux ouvre le chapitre suivant et ramène au parcours, où le chapitre reçoit la mention « Terminé ». Les quinze niveaux d’un chapitre terminé restent librement rejouables. Les réussites enregistrées avant cette règle restent conservées et rejouables.
+
+## Chronos, étapes, records et succès
+
+Le temps actif commence à l’affichage du niveau ; les menus, le titre et l’arrière-plan le mettent en pause. Une création de point ou de droite est une étape, y compris après rétablissement. Annuler ne rembourse pas les étapes. Le point de départ provisoire d’un glissement ne crée pas une étape supplémentaire : un tracé de droite reste une construction. Les minima de temps et d’étapes sont indépendants. Les anciens brouillons non chronométrés restent jouables mais nécessitent un redémarrage pour établir un record complet. Quinze succès couvrent la progression, les temps, les étapes, les essais sans annulation et le chapitre des tangentes.
+
+Le bouton ⟳ efface les constructions du niveau sans perdre les réussites ou records ; l’effacement est annulable. Les réglages proposent aussi une remise à zéro globale avec confirmation et export préalable facultatif. Les préférences de couleurs et de son sont conservées.
+
+## Corrigés géométriques
+
+Les corrigés sont produits par des recettes qui dépendent des données de la figure. Les points hors grille proviennent de deux traits visibles dont les références sont enregistrées et surlignées à la lecture. Les tests déplacent les données d’entrée pour vérifier que les milieux, parallèles et perpendiculaires suivent la configuration. Les centres de carreaux et déplacements directement lisibles sont conservés dans les cas simples ; des variantes avancées utilisent des positions moins lisibles. Les segments donnés sont réutilisés ; un prolongement n’est ajouté que pour atteindre une intersection extérieure à leur portion visible. Une correction est un chemin possible, pas nécessairement le plus court.
 
 ## Développer et construire
 
@@ -56,7 +69,7 @@ npm test
 npm run build
 ```
 
-`generate` régénère les 300 niveaux et leurs témoins de construction. Les calculs utilisent des coordonnées homogènes entières (`BigInt`) : égalité, incidence et validation sont exactes. Les flottants servent seulement à dessiner et à choisir le candidat proche du doigt. Le moteur est indépendant du navigateur.
+`generate` régénère les 315 niveaux et leurs témoins de construction. Les calculs utilisent des coordonnées homogènes entières (`BigInt`) : égalité, incidence et validation sont exactes. Les flottants servent seulement à dessiner et à choisir le candidat proche du doigt. Le moteur est indépendant du navigateur.
 
 La compilation produit `dist/` et `release/TRAME.html`. Ce dernier est autonome : ouvrir le fichier sans serveur permet de jouer, avec les limites de stockage propres aux navigateurs sur les fichiers locaux. Le mode installable complet utilise le site HTTPS.
 

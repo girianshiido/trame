@@ -1,11 +1,15 @@
-# Vérification de la version 1.1
+# Vérification de la version 1.2
 
 - TypeScript strict et compilation Vite réussis.
-- 323 tests automatiques : les 300 témoins restent légaux et bornés ; relations géométriques, figures complètes, sauvegardes, thèmes, progression et cache hors connexion sont contrôlés.
-- 129 niveaux demandent désormais des tracés. Les images de segments et triangles exigent leurs sommets et leurs côtés, avec validation indépendante de la méthode et de l’ordre des constructions.
+- 350 tests automatiques : les 315 témoins des 21 chapitres restent légaux et bornés ; relations géométriques, figures complètes, sauvegardes, thèmes, progression et cache hors connexion sont contrôlés.
+- Les images de segments et triangles exigent leurs sommets et leurs côtés, avec validation indépendante de la méthode et de l’ordre des constructions.
+- Corrigés reconstruits à partir des données géométriques, avec provenance visible de chaque intersection hors grille. Les tests déplacent les points flottants pour vérifier les recettes de milieu, parallèle, perpendiculaire et rapports. Les segments fournis sont réutilisés ; leur support n’est prolongé que si nécessaire.
+- Quinze niveaux de tangentes : cercles entièrement dans le cadre, contacts et tangences vérifiés exactement. Les configurations externes et communes fournissent un contact ou une première tangente pour permettre une construction par traits droits sans lecture de coordonnées cachées. Le joueur ne trace aucun cercle.
+- Placement des lettres évalué autour des points selon les bords, les autres lettres, les traits et les cercles. Tests de positionnement et contrôle visuel des contacts du chapitre 21.
+- Chrono actif, pauses et restauration contrôlés ; minima de temps et d’étapes indépendants, quinze succès et absence de faux records sur les anciens brouillons. Remise à zéro globale testée sur des données de test, avec conservation des préférences.
 - Rendu mobile vérifié à 375 × 548 (hauteur utile avec barres du navigateur) : canevas de 365 px, menu entièrement visible et aucun débordement horizontal. Ce sont des dimensions simulées, distinctes d’un essai physique.
 - Interface allégée : titre du niveau, graduations, rappels permanents, état de sauvegarde et flèches de pagination retirés de l’affichage de jeu. Le logo ouvre le nouvel écran titre.
-- Les cinq thèmes s’appliquent au dessin et à l’interface ; Nocturne, son enregistrement et sa restauration après rechargement ont été vérifiés dans le navigateur.
+- Les six thèmes s’appliquent au dessin et à l’interface ; Boréal a été vérifié dans le navigateur, avec la reprise du niveau, l’effacement du dessin et les records.
 - Vérification du rendu automatisée : aucun nombre sur les axes, noms des points réponses après réussite uniquement, transparence des traits et mise en évidence des segments finaux.
 - Une ancienne sauvegarde sans option de thème a été importée depuis l’interface. Réussites et dessin en cours sont conservés ; les éventuelles réussites avancées restent rejouables sans ouvrir les nouveaux niveaux dont les prérequis manquent.
 - La dernière réussite d’un chapitre a été effectuée dans le navigateur : retour automatique au parcours, coche « Terminé », chapitre suivant ouvert, puis accès libre aux quinze niveaux et sélection d’un ancien niveau vérifiés.

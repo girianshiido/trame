@@ -31,7 +31,13 @@ export const lexicon:Entry[]=[
  {name:'Perspective',definition:'Ici, deux figures dont les sommets correspondants sont alignés avec un même centre.',example:'Les droites (AA′), (BB′) et (CC′) passent par O.',diagram:'perspective'},
  {name:'Alignement',definition:'Des points sont alignés lorsqu’une même droite passe par chacun d’eux.',example:'Deux points fixent une droite ; un troisième peut appartenir à cette droite.',diagram:'ratio'},
  {name:'Varignon',definition:'Les milieux successifs des côtés d’un quadrilatère forment toujours un parallélogramme.',example:'Cette propriété reste vraie si le quadrilatère de départ est irrégulier.',diagram:'varignon'},
- {name:'Pappus',definition:'Deux triplets de points alignés engendrent trois intersections qui sont elles-mêmes alignées.',example:'Pour A, B, C et D, E, F alignés : (AE)∩(BD), (AF)∩(CD) et (BF)∩(CE) sont alignés.',diagram:'pappus'}
+ {name:'Pappus',definition:'Deux triplets de points alignés engendrent trois intersections qui sont elles-mêmes alignées.',example:'Pour A, B, C et D, E, F alignés : (AE)∩(BD), (AF)∩(CD) et (BF)∩(CE) sont alignés.',diagram:'pappus'},
+ {name:'Cercle',definition:'L’ensemble des points situés à une même distance d’un centre.',example:'Le rayon relie le centre à n’importe quel point du cercle. Les cercles de TRAME sont des figures données.',diagram:'tangent'},
+ {name:'Rayon',definition:'Un segment qui relie le centre d’un cercle à un point de ce cercle, ou sa longueur.',example:'Tous les rayons d’un même cercle ont la même longueur.',diagram:'tangent'},
+ {name:'Tangente',definition:'Une droite qui rencontre un cercle en un seul point, appelé point de contact.',example:'La tangente est perpendiculaire au rayon au point de contact.',diagram:'tangent'},
+ {name:'Tangentes communes',definition:'Des droites tangentes à deux cercles à la fois.',example:'Une tangente extérieure laisse les deux centres du même côté. Une tangente intérieure les sépare.',diagram:'common'},
+ {name:'Point donné',definition:'Un point fourni par la figure, utilisable exactement sans connaître ses coordonnées.',example:'Un point entre les lignes de la grille sert directement d’extrémité à une droite : aucune mesure de sa position n’est nécessaire.',diagram:'point'}
+
 ];
 export function diagram(type:string):string {
  const line=(x:number,y:number,u:number,v:number,accent=false)=>`<path d="M${x} ${y}L${u} ${v}" stroke="${accent?'#d17946':'#236a60'}" stroke-width="2" fill="none"/>`;
@@ -48,6 +54,8 @@ export function diagram(type:string):string {
  case'surface':content=`<path d="M30 20H155V50H65V105H30Z" fill="#236a6020" stroke="#236a60" stroke-width="2"/>`+dot(72,51,'G');break;
  case'thales':case'perspective':content=line(30,105,95,15)+line(95,15,170,105)+line(30,105,170,105)+line(62.5,60,132.5,60,true)+dot(95,15,'O');break;
  case'rotation':content=line(95,70,35,90)+line(95,70,115,10,true)+dot(95,70,'O')+dot(35,90,'A')+dot(115,10,'A′')+`<path d="M62 80 A34 34 0 0 1 105 38" fill="none" stroke="#d17946" stroke-dasharray="3 3"/>`;break;
+ case'tangent':content=`<path d="M129 66 A39 39 0 1 0 51 66 A39 39 0 1 0 129 66" fill="none" stroke="#236a60" stroke-width="2"/>`+line(90,66,129,66)+line(129,10,129,112,true)+dot(90,66,'O')+dot(129,66,'A')+`<path d="M119 66V56H129" fill="none" stroke="#d17946"/>`;break;
+ case'common':content=`<path d="M77 72 A25 25 0 1 0 27 72 A25 25 0 1 0 77 72 M163 72 A25 25 0 1 0 113 72 A25 25 0 1 0 163 72" fill="none" stroke="#236a60" stroke-width="2"/>`+line(12,47,179,47,true)+dot(52,72,'O₁')+dot(138,72,'O₂')+dot(52,47,'A')+dot(138,47,'B');break;
  case'pappus':content=line(15,20,175,20)+line(15,100,175,100)+line(25,20,95,100,true)+line(95,20,25,100,true)+line(25,20,165,100,true)+line(165,20,25,100,true)+line(95,20,165,100,true)+line(165,20,95,100,true)+line(15,60,175,60)+dot(60,60)+dot(95,60)+dot(130,60);break;
  default:content=`<path d="M25 100L165 100L75 15Z" fill="#236a6010" stroke="#236a60" stroke-width="2"/>`+line(75,15,95,100,true)+line(25,100,120,57.5,true)+dot(88.3,71.6,'G');break;
  }return `<svg viewBox="0 0 190 120" aria-label="Exemple géométrique" role="img"><defs><pattern id="g-${type}" width="15" height="15" patternUnits="userSpaceOnUse"><path d="M15 0H0V15" fill="none" stroke="#dfe6dd" stroke-width=".7"/></pattern></defs><rect width="190" height="120" fill="url(#g-${type})"/>${content}</svg>`;
