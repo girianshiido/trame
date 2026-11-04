@@ -1,5 +1,5 @@
 {
-  "name": "trame-geometrie", "version": "1.2.1", "private": true, "type": "module",
+  "name": "trame-geometrie", "version": "1.2.2", "private": true, "type": "module",
   "scripts": {
     "dev": "vite --host 127.0.0.1",
     "generate": "tsc -p tsconfig.tools.json && node scripts/content.mjs",

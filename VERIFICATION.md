@@ -1,4 +1,4 @@
-# Vérification de la version 1.2.1
+# Vérification de la version 1.2.2
 
 - TypeScript strict et compilation Vite réussis.
 - 353 tests automatiques : les 315 témoins des 21 chapitres restent légaux et bornés ; relations géométriques, figures complètes, sauvegardes, thèmes, progression et cache hors connexion sont contrôlés.
@@ -20,3 +20,5 @@
 Les sauvegardes conservent le format 1. Les nouvelles options sont facultatives dans les fichiers plus anciens. Les anciennes réussites ne sont pas supprimées par l’enrichissement des objectifs de construction.
 
 Le Grand Atelier reste le chapitre final (21), après les tangentes (20). Les anciens identifiants de ces deux chapitres sont migrés une seule fois, y compris dans les imports : réussites, brouillons, chronos et position courante sont conservés. Le dernier défi combine centre de gravité et tangente.
+
+Les niveaux rouverts repartent avec la figure de départ et un nouvel essai chronométré, qu’ils aient été réussis ou non. Les réussites et records restent indépendants du dessin affiché. L’atelier libre conserve son dessin.
