@@ -34,7 +34,7 @@ test('Les segments donnés ne sont pas retracés quand le corrigé fonctionne d�
  assert.ok(!middle.steps.some(s=>s.kind==='line'&&lineThrough(s.a,s.b)===ab));
 });
 test('Tangentes : quinze configurations, cercles dans le cadre et tangence exacte',()=>{
- const tangents=levels.filter(l=>l.chapter===21);assert.equal(tangents.length,15);
+ const tangents=levels.filter(l=>l.chapter===20);assert.equal(tangents.length,15);
  for(const level of tangents){assert.ok(level.circles?.length);
   for(const c of level.circles){const o=read(c.center),[rn,rd]=c.radius.map(BigInt);assert.ok(o[0]*rd>=rn*o[2]&&o[1]*rd>=rn*o[2]&&(8n*o[2]-o[0])*rd>=rn*o[2]&&(8n*o[2]-o[1])*rd>=rn*o[2]);}
   for(const target of level.targets.filter(t=>t.kind==='line'))for(const index of target.circles){const circle=level.circles[index],[a,b,c]=read(target.line),o=read(circle.center),[rn,rd]=circle.radius.map(BigInt),s=a*o[0]+b*o[1]+c*o[2];assert.equal(s*s*rd*rd,rn*rn*o[2]*o[2]*(a*a+b*b),level.id);}
@@ -42,7 +42,7 @@ test('Tangentes : quinze configurations, cercles dans le cadre et tangence exact
  assert.equal(tangents.at(-1).targets.length,4);
 });
 test('Cercles : les contacts et premières tangentes fournis sont de vraies données de la figure',()=>{
- for(const level of levels.filter(l=>l.chapter===21)){
+ for(const level of levels.filter(l=>l.chapter===20)){
   const givens=Object.fromEntries(level.given.map(g=>[g.label,read(g.p)]));
   for(const name of ['A','B'])if(givens[name]){
    const point=givens[name],circle=level.circles[0],center=read(circle.center),[rn,rd]=circle.radius.map(BigInt);
@@ -51,4 +51,12 @@ test('Cercles : les contacts et premières tangentes fournis sont de vraies donn
   }
   if(givens.P)for(const target of level.targets)assert.ok(on(read(target.line),givens.P));
  }
+});
+
+test('Grand Atelier final : centre de gravité puis tangente, sans centre donné',()=>{
+ const level=levels.find(l=>l.id==='21-15'),[a,b,c]=level.given.map(g=>read(g.p));
+ assert.equal(level.given.map(g=>g.label).join(''),'ABC');
+ const center=read(level.circles[0].center);assert.ok(same(center,scale(scale(a,b,1,2),c,2,3)));
+ assert.equal(key(center),'4,4,1');const target=level.targets.find(t=>t.kind==='line'),[x,y,z]=read(target.line),[rn,rd]=level.circles[0].radius.map(BigInt),s=x*center[0]+y*center[1]+z*center[2];assert.equal(s*s*rd*rd,rn*rn*center[2]*center[2]*(x*x+y*y));
+ assert.ok(on(read(target.line),a));assert.ok(replaySolution(level));
 });

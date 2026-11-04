@@ -36,7 +36,7 @@ export function achievements(save:Save,levels:Level[]):Achievement[]{
     {id:'three-steps',title:'L’épure',description:'Réussir en trois constructions ou moins.',value:binary(steps<=3),target:1},
     {id:'one-step',title:'Un seul geste',description:'Réussir avec une seule construction.',value:binary(steps===1),target:1},
     {id:'clean',title:'Sans retouche',description:'Réussir un essai complet sans annulation.',value:binary(results.some(r=>r.cleanWin)),target:1},
-    {id:'tangents',title:'Au point de contact',description:'Terminer les quinze niveaux sur les tangentes.',value:levels.filter(l=>l.chapter===21&&save.results[l.id]).length,target:15}
+    {id:'tangents',title:'Au point de contact',description:'Terminer les quinze niveaux sur les tangentes.',value:levels.filter(l=>l.chapter===20&&save.results[l.id]).length,target:15}
   ];
 }
 export function unlockAchievements(save:Save,levels:Level[],now=Date.now()):Achievement[]{

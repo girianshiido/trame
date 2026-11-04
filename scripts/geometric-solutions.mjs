@@ -246,13 +246,14 @@ export function buildGeometricSolution(level){
    if(j===0)mark(centroid(A,B,C));else if(j===2)mark(ortho());else if(j===3)mark(midpt(circ(),ortho()));else mark(circ());break;
   }
   case 19:{const center=c.meet(c.join(A,g['A′']),c.join(B,g['B′']),'Les droites entre points correspondants donnent le centre de perspective.');if(j<3)mark(center);else c.meet(c.join(C,center),c.join(g.U,g.V),'L’image correspondante est sur la droite donnée et sur le rayon de perspective.');break;}
-  case 20:
+  case 21:
    if(j===0){const ps=[A,B,C,D],mids=ps.map((a,i)=>midpt(a,ps[(i+1)%4]));mids.forEach((a,i)=>line(a,mids[(i+1)%4]));}
    if(j===1)mark(c.weighted([A,B,C],[1,2,3]));
    if(j===2)mark(centroid(g.I,g.J,g.K));
    if(j===3)mark(c.weighted(level.segments.map(([a,b])=>midpt(read(a),read(b))),[1,1,1]));
-   if(j===4){c.meet(c.join(A,g.E),c.join(B,D),'Former la première intersection de Pappus.');c.meet(c.join(A,g.F),c.join(C,D),'Former la deuxième intersection de Pappus.');c.meet(c.join(B,g.F),c.join(C,g.E),'Former la troisième intersection de Pappus.');}break;
-  case 21:{
+   if(j===4&&level.circles){const center=centroid(A,B,C);mark(center);c.finalLine(c.perpendicular(A,center,A));}
+   else if(j===4){c.meet(c.join(A,g.E),c.join(B,D),'Former la première intersection de Pappus.');c.meet(c.join(A,g.F),c.join(C,D),'Former la deuxième intersection de Pappus.');c.meet(c.join(B,g.F),c.join(C,g.E),'Former la troisième intersection de Pappus.');}break;
+  case 20:{
    if(level.number<=5)c.finalLine(c.perpendicular(A,O,A));
    else if(level.number===6){c.finalLine(c.perpendicular(A,O,A));const other=c.ratio(O,A,-1);c.finalLine(c.perpendicular(other,O,other));}
    else if(level.number<=10){const other=c.mirror(A,O,g.P);c.finalLine(c.perpendicular(other,O,other));}

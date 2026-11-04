@@ -40,8 +40,8 @@ Six thèmes sont disponibles et mémorisés : Aurore, Lagon, Nocturne, Citrus, P
 17. Centres de surfaces : triangles, plaques composées et concaves
 18. Points remarquables
 19. Perspectives
-20. Le grand atelier : Varignon, masses pondérées, Pappus
-21. Tangentes aux cercles : contacts donnés, deuxième tangente à retrouver et tangentes communes
+20. Tangentes aux cercles : contacts donnés, deuxième tangente à retrouver et tangentes communes
+21. Le grand atelier : Varignon, masses pondérées, Pappus, puis centre de gravité et tangente
 
 Le chapitre des tangentes fournit les cercles et les contacts utiles : aucun cercle auxiliaire ne se trace. Les points restent ceux des nœuds et des croisements de traits droits. Les cas avancés donnent un premier contact ou une première tangente pour faire construire les autres sans donnée cachée.
 
@@ -94,3 +94,5 @@ Format versionné `trame-save-v1`, copie de récupération et export/import JSON
 Les tests rejouent tous les témoins : chaque point doit être accessible au moment de sa création et chaque extrémité reste dans le cadre. Ils contrôlent aussi les relations géométriques, les centres de masse des fils et plaques, les partages de chemins, l’acceptation de constructions différentes et les sauvegardes.
 
 Les essais de petits écrans dans le navigateur sont des simulations de format, distinctes d’un essai sur iPhone physique.
+
+Le Grand Atelier reste le dernier chapitre. Les sauvegardes des versions précédentes suivent automatiquement le déplacement des chapitres 20 et 21.

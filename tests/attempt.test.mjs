@@ -38,3 +38,14 @@ test('Remise à zéro : toutes les données de jeu sont effacées, les préfére
  const save=fresh();save.theme='boreal';save.sound=true;save.current='21-15';save.results['21-14']={stars:3,moves:5,bestTimeMs:4000};save.achievements.first=123;save.drafts.free={points:['2,2,1'],lines:[]};save.attempts['21-15']=newAttempt();
  const cleared=resetSave(save);assert.deepEqual(cleared,{...fresh(),theme:'boreal',sound:true});assert.ok(save.results['21-14']);
 });
+
+test('Ordre du parcours : tangentes avant le Grand Atelier final',()=>{
+ const {chapters}=JSON.parse(fs.readFileSync(new URL('../src/content.json',import.meta.url)));
+ assert.equal(chapters[19].title,'Tangentes aux cercles');assert.equal(chapters.at(-1).title,'Le grand atelier');
+ assert.equal(levels.at(-1).id,'21-15');assert.ok(levels.at(-1).circles?.length);
+});
+test('Migration du Grand Atelier : réussites, dessin, chrono et position suivent le chapitre',()=>{
+ const old={...fresh(),current:'20-5',results:{'20-4':{stars:3,moves:6},'21-2':{stars:3,moves:4}},drafts:{'20-5':{points:['2,2,1'],lines:[]}},attempts:{'20-5':{...newAttempt(),started:true,elapsedMs:1234,steps:2}}};
+ delete old.campaignVersion;
+ const migrated=validate(old);assert.equal(migrated.current,'21-5');assert.deepEqual(migrated.results['21-4'],old.results['20-4']);assert.deepEqual(migrated.results['20-2'],old.results['21-2']);assert.deepEqual(migrated.drafts['21-5'],old.drafts['20-5']);assert.deepEqual(migrated.attempts['21-5'],old.attempts['20-5']);assert.deepEqual(validate(JSON.parse(JSON.stringify(migrated))),migrated);
+});

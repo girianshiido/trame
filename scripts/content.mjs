@@ -22,8 +22,8 @@ const chapters=[
  ['Centres de surfaces','Triangles, trapèzes et figures creuses','17','Une plaque uniforme se décompose en morceaux. Leurs centres sont pondérés par leurs aires, jamais par le nombre de sommets.',['Surface uniforme','Barycentre','Aire']],
  ['Points remarquables','Trois familles se rencontrent','18','Médianes, hauteurs et médiatrices cachent des points de rencontre particuliers.',['Orthocentre','Cercle circonscrit','Centre de gravité']],
  ['Perspectives','Des points qui se répondent','19','Des couples de points alignés vers un même centre permettent de reconstruire une figure.',['Perspective','Alignement']],
- ['Le grand atelier','Croiser toutes les idées','20','Milieux, équilibres et incidences se combinent. Les outils restent les mêmes ; le regard a changé.',['Varignon','Pappus','Barycentre']],
- ['Tangentes aux cercles','Au point de contact','21','Une tangente est perpendiculaire au rayon au point de contact. Les cercles sont donnés comme figures de référence ; on construit toujours avec les points et les droites.',['Tangente','Cercle','Homothétie']]
+ ['Tangentes aux cercles','Au point de contact','20','Une tangente est perpendiculaire au rayon au point de contact. Les cercles sont donnés comme figures de référence ; on construit toujours avec les points et les droites.',['Tangente','Cercle','Homothétie']],
+ ['Le grand atelier','Croiser toutes les idées','21','Milieux, équilibres et incidences se combinent. Les outils restent les mêmes ; le regard a changé.',['Varignon','Pappus','Barycentre']]
 ].map((a,i)=>({id:i+1,title:a[0],subtitle:a[1],icon:a[2],intro:a[3],terms:a[4]}));
 const nodes=grid(); const gl=gridLines();
 function transform(a,r){let q=a;for(let i=0;i<r;i++)q=norm(8n*q[2]-q[1],q[0],q[2]);return q;}
@@ -82,7 +82,7 @@ function make(ch,j,r){const z=new Puzzle(ch,j,r),G=(name,a)=>z.givenPoint(name,a
  case 17:{const n=r*5+j;const polys=[[[1,1],[7,1],[4,7]],[[1,1],[7,2],[2,6]],[[1,2],[6,1],[7,6]],[[1,1],[7,1],[7,5],[1,5]],[[1,1],[6,2],[7,7],[2,6]],[[1,1],[7,1],[6,5],[2,5]],[[1,1],[7,1],[7,3],[3,3],[3,7],[1,7]],[[1,1],[7,1],[7,3],[5,3],[5,5],[1,5]],[[1,1],[7,1],[7,7],[5,7],[5,3],[3,3],[3,7],[1,7]],[[1,1],[7,1],[7,3],[5,3],[5,7],[3,7],[3,3],[1,3]],[[1,1],[7,1],[7,5],[5,5],[5,3],[3,3],[3,5],[1,5]],[[1,1],[7,1],[7,5],[5,5],[5,7],[1,7]],[[1,1],[7,1],[7,3],[5,3],[5,5],[3,5],[3,7],[1,7]],[[1,1],[7,1],[7,7],[3,7],[3,5],[1,5]],[[1,1],[7,1],[7,7],[5,7],[5,5],[3,5],[3,7],[1,7]]];const ps=polys[n].map(a=>P(...a));z.shape('ABCDEFGHIJKL',ps);z.title=['Un premier triangle','Le triangle oblique','Le triangle renversé','Une plaque rectangulaire','Une plaque inclinée','Le trapèze','Une plaque en L','La marche','La plaque en U','La plaque en T','Un creux central','Le coin retiré','L’escalier','Une plaque asymétrique','La dernière encoche'][n];z.goal='La figure est une plaque uniforme. Place son centre de gravité G.';if(n<3){z.line(ps[0],mid(ps[1],ps[2]));z.line(ps[1],mid(ps[0],ps[2]));}z.targetPoint(polygonCentroid(ps),'G');z.lesson='Pour une surface uniforme, la masse de chaque morceau est proportionnelle à son aire. Le centre peut même tomber dans un creux, à l’extérieur de la matière (mais toujours dans la grille).';z.hints=['Commence par les triangles : leurs médianes se rencontrent au centre de gravité.','Pour une plaque composée, pondère les centres de ses morceaux par leurs aires. On peut aussi soustraire une pièce retirée.'];break;}
  case 18:{[A,B,C]=z.shape('ABC',triangle(j));z.title=['Le centre des médianes','Le centre du cercle','La rencontre des hauteurs','Deux centres, un milieu','Le cercle encore'][j];if(j===0){z.goal='Place G, le centre de gravité du triangle ABC.';z.line(A,mid(B,C));z.line(B,mid(A,C));z.targetPoint(mean([A,B,C]),'G');}else{const m=mid(A,B),n=mid(A,C),u=rotate(A,m),v=rotate(A,n);const circum=intersection(cross(m,u),cross(n,v));const ha=mid(A,reflect(A,cross(B,C))),hb=mid(B,reflect(B,cross(A,C)));const ortho=intersection(cross(A,ha),cross(B,hb));if(j===2){z.goal='Place H, l’orthocentre de ABC : le point commun aux hauteurs.';z.line(A,ha);z.line(B,hb);z.targetPoint(ortho,'H');}else if(j===3){z.goal='Place N, le milieu entre le centre O du cercle circonscrit et l’orthocentre H de ABC.';z.targetPoint(mid(circum,ortho),'N');}else{z.goal='Place O, le centre du cercle passant par A, B et C. Aucun cercle n’est à tracer.';z.line(m,u);z.line(n,v);z.targetPoint(circum,'O');}}break;}
  case 19:{O=j===4?P(7,6):j===1?P(3,5):j===2?P(5,3):P(4,4);A=P(1,1);B=P(7,2);C=P(2,7);const ap=scale(A,O,j===3?1:2,3),bp=scale(B,O,1,2),cp=scale(C,O,2,3);G('A',A);G('B',B);G('C',C);G('A′',ap);G('B′',bp);z.segments.push([key(A),key(B)],[key(B),key(C)],[key(C),key(A)]);z.title=['Le centre caché','Les rayons invisibles','Une perspective oblique','Retrouver l’image','Une troisième paire'][j];if(j<3){G('C′',cp);z.goal='Les droites (AA′), (BB′), (CC′) passent par un même centre O. Place O.';z.line(A,ap);z.line(B,bp);z.targetPoint(O,'O');}else{const h=P(0,j===3?5:6),v=P(8,j===3?5:6);G('U',h);G('V',v);z.initialLines.push(key(cross(h,v)));z.board.lines.push(key(cross(h,v)));z.goal='Les couples A, A′ et B, B′ définissent un centre de perspective O. Place C′ sur (UV) pour que C, C′ et O soient alignés.';z.line(A,ap);z.line(B,bp);z.need(O);z.line(C,O);z.targetPoint(intersection(cross(C,O),cross(h,v)),'C′');}break;}
- case 20:{z.title=['Le théorème de Varignon','Des masses différentes','Le centre sans sommet','Le milieu d’un fil composé','Le théorème de Pappus'][j];
+ case 21:{z.title=['Le théorème de Varignon','Des masses différentes','Le centre sans sommet','Le milieu d’un fil composé','Le théorème de Pappus'][j];
   if(j===0){const ps=z.shape('ABCD',[P(1,1),P(7,2),P(6,7),P(2,6)]);z.goal='Place les quatre milieux des côtés de ABCD : ils forment un parallélogramme.';ps.forEach((a,i)=>z.targetPoint(mid(a,ps[(i+1)%4]),`Milieu ${i+1}`));z.lesson='Même pour un quadrilatère quelconque, les milieux successifs de ses côtés forment un parallélogramme : c’est le théorème de Varignon.';}
   if(j===1){A=G('A',P(1,1));B=G('B',P(7,2));C=G('C',P(2,7));z.goal='A porte une masse 1, B une masse 2 et C une masse 3. Place leur centre de gravité G.';z.targetPoint(mean([A,B,C],[1,2,3]),'G');}
   if(j===2){A=G('I',P(2,3));B=G('J',P(5,2));C=G('K',P(5,6));z.goal='I, J et K sont les milieux des trois côtés d’un triangle caché. Place son centre de gravité G.';z.targetPoint(mean([A,B,C]),'G');z.lesson='Le triangle des milieux a le même centre de gravité que le triangle de départ.';}
@@ -113,7 +113,7 @@ function enrichFinalFigure(level){
   addEdge(C.p,D.p,'[CD]');addEdge(D.p,A.p,'[DA]');
   level.goal='Complète le parallélogramme ABCD : construis D et trace les côtés [CD] et [DA].';
  }
- if(level.chapter===20&&(level.number-1)%5===0){
+ if(level.chapter===21&&(level.number-1)%5===0){
   const mids=level.targets.filter(t=>t.kind==='point');
   mids.forEach((m,i)=>addEdge(m.p,mids[(i+1)%mids.length].p,'Côté du parallélogramme des milieux'));
   level.goal='Construis le parallélogramme formé par les quatre milieux des côtés de ABCD.';
@@ -121,10 +121,15 @@ function enrichFinalFigure(level){
  level.par=level.steps.length;
  return level;
 }
-const levels=[];for(let ch=1;ch<=20;ch++){for(let r=0;r<3;r++)for(let j=0;j<5;j++){try{let level=make(ch,j,r);if(r===2&&ch!==1&&ch!==11&&ch!==15&&ch!==17){const shrink=q=>scale(read(q),P(4,4),7,11),sp=q=>key(shrink(q)),sl=q=>{const [a,b,c]=read(q);return key(norm(11n*a,11n*b,7n*c-16n*a-16n*b));};level={...level,given:level.given.map(g=>({...g,p:sp(g.p)})),segments:level.segments.map(s=>s.map(sp)),initialLines:level.initialLines.map(sl),targets:level.targets.map(t=>t.kind==='point'?{...t,p:sp(t.p)}:{...t,line:sl(t.line)})};level.steps=[];level.par=0;}level=reuseGivenStrokes(buildGeometricSolution(enrichFinalFigure(level)));levels.push(level);}catch(e){console.error(`Chapter ${ch}, scene ${j}, rotation ${r}`);throw e;}}console.log(`Chapitre ${ch} : 15 solutions bornées.`);}
+const levels=[];for(let ch=1;ch<=21;ch++){if(ch===20)continue;for(let r=0;r<3;r++)for(let j=0;j<5;j++){try{let level=make(ch,j,r);if(r===2&&ch!==1&&ch!==11&&ch!==15&&ch!==17){const shrink=q=>scale(read(q),P(4,4),7,11),sp=q=>key(shrink(q)),sl=q=>{const [a,b,c]=read(q);return key(norm(11n*a,11n*b,7n*c-16n*a-16n*b));};level={...level,given:level.given.map(g=>({...g,p:sp(g.p)})),segments:level.segments.map(s=>s.map(sp)),initialLines:level.initialLines.map(sl),targets:level.targets.map(t=>t.kind==='point'?{...t,p:sp(t.p)}:{...t,line:sl(t.line)})};level.steps=[];level.par=0;}if(ch===21&&r===2&&j===4)level=finalWorkshop(level);level=reuseGivenStrokes(buildGeometricSolution(enrichFinalFigure(level)));levels.push(level);}catch(e){console.error(`Chapter ${ch}, scene ${j}, rotation ${r}`);throw e;}}console.log(`Chapitre ${ch} : 15 solutions bornées.`);}
+function finalWorkshop(level){
+ const a=P(109,116,22),b=P(53,60,22),c=P(51,44,11),g=mean([a,b,c]);
+ const given=[a,b,c].map((q,i)=>({p:key(q),label:'ABC'[i]}));
+ return {...level,title:'Le dernier contact',goal:'Place G, le centre de gravité du triangle ABC. Le cercle donné a pour centre G et passe par A : trace sa tangente en A.',lesson:'Milieux, centre de gravité et tangentes se rencontrent dans une même figure.',given,segments:[[key(a),key(b)],[key(b),key(c)],[key(c),key(a)]],initialLines:[],steps:[],par:0,circles:[{center:key(g),radius:[35,22],label:'c'}],targets:[{kind:'point',p:key(g),label:'G'},{kind:'line',line:key(cross(a,rotate(g,a))),label:'Tangente en A',circles:[0],contacts:[{p:key(a),label:'A'}]}]};
+}
 function givenPointFor(level,label){return read(level.given.find(g=>g.label===label).p);}
 function makeTangent(number){
- const z=new Puzzle(21,0,0),circles=[];
+ const z=new Puzzle(20,0,0),circles=[];
  const offset=(o,x,y,d=1)=>affine(o,P(x,y,d),P(0,0));
  const circle=(o,rn,rd=1,label='c')=>{circles.push({center:key(o),radius:[rn,rd],label});return circles.length-1;};
  const given=(name,q)=>z.givenPoint(name,q);
@@ -174,13 +179,14 @@ function makeTangent(number){
  }
  z.hints=['Une tangente est perpendiculaire au rayon au point de contact.','Les cercles sont des figures de référence données : aucun cercle auxiliaire ne se trace. Les points donnés s’utilisent sans mesurer leurs coordonnées.'];
  if(number>=11)z.hints.push('Les centres d’homothétie de deux cercles relient les points de contact correspondants.');
- const level=z.finish();level.id='21-'+number;level.number=number;level.circles=circles;level.difficulty=Math.min(5,2+Math.floor((number-1)/4));
+ const level=z.finish();level.id='20-'+number;level.number=number;level.circles=circles;level.difficulty=Math.min(5,2+Math.floor((number-1)/4));
  if(number===6){const a=level.targets[0].contacts[0].p;level.given.push({p:a,label:'A'});level.goal='A est sur le cercle. Trace la tangente en A puis la tangente parallèle opposée. O est le centre.';}
  if(number>=7&&number<=10){const a=key(number===7?P(17,26,5):number===8?P(21,28,5):number===9?P(68,99,25):P(24,32,5));level.given.push({p:a,label:'A'});level.segments.push([key(givenPointFor(level,'P')),a]);const o=givenPointFor(level,'O'),down=number===7?P(17,14,5):number===8?P(21,12,5):number===9?P(4,3):P(24,8,5);level.targets=[{kind:'line',line:key(cross(down,rotate(o,down))),label:'Seconde tangente',circles:[0],contacts:[{p:key(down),label:'B'}]}];level.goal='La tangente (PA) est donnée. Construis l’autre tangente au cercle passant par P. O est le centre.';}
  if(number>=12){level.given.push({p:level.targets[0].contacts[0].p,label:'A'});level.goal=(number===14?'A est le contact d’une tangente commune intérieure. Trace les deux tangentes communes qui croisent [O1O2].':number===15?'A et B sont les contacts, sur le premier cercle, d’une tangente extérieure et d’une tangente intérieure. Construis les quatre tangentes communes.':'A est le contact d’une tangente commune extérieure. Trace les deux tangentes communes extérieures.');if(number===15){level.given=level.given.filter(g=>!['S','I'].includes(g.label));level.given.push({p:level.targets[2].contacts[0].p,label:'B'});}}
  return reuseGivenStrokes(buildGeometricSolution(level));
 }
 for(let n=1;n<=15;n++){try{levels.push(makeTangent(n));}catch(e){console.error('Tangente',n);throw e;}}
-console.log('Chapitre 21 : 15 tangentes et constructions bornées.');
+console.log('Chapitre 20 : 15 tangentes et constructions bornées.');
+levels.sort((a,b)=>a.chapter-b.chapter||a.number-b.number);
 fs.writeFileSync(new URL('../src/content.json',import.meta.url),JSON.stringify({chapters,levels}));
 console.log(`${levels.length} niveaux écrits.`);
